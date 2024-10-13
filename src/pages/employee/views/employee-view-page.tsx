@@ -1,11 +1,11 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import EmployeeForm from '../employee-form';
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import EmployeeForm from "../employee-form";
 
 const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Employee', link: '/dashboard/employee' },
-  { title: 'Create', link: '/dashboard/employee/create' }
+  { title: "Dashboard", link: "/dashboard" },
+  { title: "Employee", link: "/dashboard/employee" },
+  { title: "Create", link: "/dashboard/employee/create" },
 ];
 
 export default function EmployeeViewPage() {
