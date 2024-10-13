@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres_tfg
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: agv
+      PGDATA: /data/postgres
+      TZ: America/Sao_Paulo
+    volumes:
+      - postgres_data:/data/postgres
+    ports:
+      - "5432:5432"
+volumes:
+  postgres_data:

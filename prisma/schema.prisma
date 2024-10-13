@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_LOCAL")
+}
+
+// Padrão do next-auth
+model User {
+  id            String    @id @default(uuid()) @map("id")
+  name          String?   @map("nome")
+  email         String    @unique @map("email")
+  emailVerified DateTime? @map("email_verificado")
+  image         String?   @map("imagem")
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now()) @map("criado_em")
+  updatedAt     DateTime  @updatedAt @map("atualizado_em")
+
+  @@map("usuarios")
+}
+
+model Account {
+  userId            String  @map("usuario_id")
+  type              String  @map("tipo")
+  provider          String  @map("provedor")
+  providerAccountId String  @map("id_conta_provedor")
+  refresh_token     String? @map("refresh_token")
+  access_token      String? @map("access_token")
+  expires_at        Int?    @map("expira_em")
+  token_type        String? @map("tipo_token")
+  scope             String? @map("escopo")
+  id_token          String? @map("id_token")
+  session_state     String? @map("estado_sessao")
+
+  createdAt DateTime @default(now()) @map("criado_em")
+  updatedAt DateTime @updatedAt @map("atualizado_em")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("contas")
+}
+
+model Session {
+  sessionToken String   @unique @map("token_sessao")
+  userId       String   @map("usuario_id")
+  expires      DateTime @map("expira_em")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("criado_em")
+  updatedAt DateTime @updatedAt @map("atualizado_em")
+
+  @@map("sessoes")
+}
