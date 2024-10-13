@@ -4,7 +4,7 @@ import { searchParams } from "@/lib/searchparams";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 
-export function useEmployeeTableFilters() {
+export function useRegistroAtividadesFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "q",
     searchParams.q

@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey: string;
   pageNo: number;
-  totalUsers: number;
+  totalItems: number;
   pageSizeOptions?: number[];
   pageCount: number;
   searchParams?: {
@@ -48,7 +48,7 @@ interface DataTableProps<TData, TValue> {
   };
 }
 
-export function EmployeeTable<TData, TValue>({
+export function RegistroAtividadesTable<TData, TValue>({
   columns,
   data,
   searchKey,

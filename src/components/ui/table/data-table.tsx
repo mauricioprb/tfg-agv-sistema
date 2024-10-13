@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
         ? updaterOrValue(paginationState)
         : updaterOrValue;
 
-    setCurrentPage(pagination.pageIndex + 1); // converting zero-based index to one-based
+    setCurrentPage(pagination.pageIndex + 1);
     setPageSize(pagination.pageSize);
   };
 
@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Sem dados.
                 </TableCell>
               </TableRow>
             )}

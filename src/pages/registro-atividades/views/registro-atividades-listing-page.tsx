@@ -1,11 +1,11 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
-import EmployeeTable from "../employee-tables";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Employee } from "@/constants/data";
-import { fakeUsers } from "@/constants/mock-api";
+import { RegistroAtividades } from "@/constants/data";
+import { fakeOperadores } from "@/constants/mock-api";
 import { searchParamsCache } from "@/lib/searchparams";
+import RegistroAtividadesTable from "../registro-atividades-tables";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -23,10 +23,9 @@ export default async function EmployeeListingPage() {
     ...(search && { search }),
   };
 
-  // mock api call
-  const data = await fakeUsers.getUsers(filters);
-  const totalUsers = data.total_users;
-  const employee: Employee[] = data.users;
+  const data = await fakeOperadores.getOperadores(filters);
+  const totalUsers = data.total_operadores;
+  const employee: RegistroAtividades[] = data.operadores;
 
   return (
     <PageContainer scrollable>
@@ -40,7 +39,7 @@ export default async function EmployeeListingPage() {
           />
         </div>
         <Separator />
-        <EmployeeTable data={employee} totalData={totalUsers} />
+        <RegistroAtividadesTable data={employee} totalData={totalUsers} />
       </div>
     </PageContainer>
   );

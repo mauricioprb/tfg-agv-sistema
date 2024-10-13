@@ -16,14 +16,14 @@ export const navItems: NavItem[] = [
   },
   {
     title: "Gestão de transporte",
-    href: "/dashboard/transporte",
+    href: "/dashboard/gestao-transporte",
     icon: "packageOpen",
-    label: "transporte",
+    label: "gestao-transporte",
   },
   {
     title: "Registro de atividades",
-    href: "/dashboard/product",
+    href: "/dashboard/registro-atividades",
     icon: "terminal",
-    label: "product",
+    label: "registro-atividades",
   },
 ];
