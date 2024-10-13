@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
-import { auth } from "../auth";
+import { auth } from "@/config/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
