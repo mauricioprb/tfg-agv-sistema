@@ -1,8 +1,8 @@
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
-const allowedGithubEmails = ["mauricio.pereira@ufn.edu.br"];
-const allowedGoogleEmails = ["mauprb@gmail.com"];
+const allowedGithubEmails = process.env.ALLOWED_GITHUB_EMAILS?.split(",") ?? [];
+const allowedGoogleEmails = process.env.ALLOWED_GOOGLE_EMAILS?.split(",") ?? [];
 
 const authConfig = {
   providers: [
