@@ -64,6 +64,10 @@ module.exports = {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        icon: {
+          DEFAULT: "hsl(var(--icon))",
+          foreground: "hsl(var(--icon-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

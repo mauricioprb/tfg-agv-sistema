@@ -32,6 +32,8 @@
     --success-foreground: 160 60% 7%;
     --warning: 46 75% 55%;
     --warning-foreground: 46 75% 8%;
+    --icon: 210 43% 3%;
+    --icon-foreground: 210 33% 96%;
   }
 
   .dark {
@@ -63,6 +65,8 @@
     --success-foreground: 160 60% 7%;
     --warning: 46 75% 55%;
     --warning-foreground: 46 75% 8%;
+    --icon: 210 43% 96%;
+    --icon-foreground: 210 43% 3%;
   }
 }
 
