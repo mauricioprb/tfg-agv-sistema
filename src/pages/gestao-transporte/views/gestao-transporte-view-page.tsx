@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import GestaoTransporteForm from "./gestao-transporte-form";
+import GestaoTransporteForm from "../gestao-transporte-form";
 import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [

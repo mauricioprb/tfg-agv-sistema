@@ -18,7 +18,7 @@ export default async function RegistroAtividadesListingPage() {
 
   return (
     <PageContainer scrollable>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <Breadcrumbs items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">

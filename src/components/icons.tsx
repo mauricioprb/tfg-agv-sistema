@@ -4,18 +4,22 @@ import {
   Bug,
   Check,
   Command,
+  DatabaseZap,
   LayoutDashboardIcon,
   Loader2,
   LocateFixed,
   LogIn,
   LucideIcon,
   LucideProps,
+  OctagonPause,
   PackageOpen,
+  Plus,
   Ruler,
   Signal,
   Split,
   TerminalSquare,
   Timer,
+  Wrench,
   X,
   XOctagon,
 } from "lucide-react";
@@ -352,4 +356,8 @@ export const Icons = {
       </defs>
     </svg>
   ),
+  chave: Wrench,
+  add: Plus,
+  pausar: OctagonPause,
+  dados: DatabaseZap,
 };

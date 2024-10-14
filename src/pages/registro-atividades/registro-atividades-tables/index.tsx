@@ -12,7 +12,7 @@ export default function RegistroAtividadesTable({
   totalData: number;
 }) {
   return (
-    <div className="space-y-4 ">
+    <div>
       <div className="flex flex-wrap items-center gap-4"></div>
       <DataTable columns={columns} data={data} totalItems={totalData} />
     </div>
