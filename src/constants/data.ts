@@ -7,6 +7,15 @@ export type RegistroAtividades = {
   evento: string;
 };
 
+export type GestaoTransporte = {
+  id: string;
+  data: string;
+  operador: string;
+  carga: string;
+  destino: string;
+  status: string;
+};
+
 export const navItems: NavItem[] = [
   {
     title: "Visão geral",

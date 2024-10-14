@@ -155,7 +155,7 @@ export function DataTable<TData, TValue>({
                 de {totalItems} linhas
               </>
             ) : (
-              "No entries found"
+              "Sem dados"
             )}
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
@@ -190,12 +190,12 @@ export function DataTable<TData, TValue>({
                 Página {paginationState.pageIndex + 1} de {table.getPageCount()}
               </>
             ) : (
-              "No pages"
+              "Sem páginas"
             )}
           </div>
           <div className="flex items-center space-x-2">
             <Button
-              aria-label="Go to first page"
+              aria-label="Ir para primeira página"
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(0)}
@@ -204,7 +204,7 @@ export function DataTable<TData, TValue>({
               <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to previous page"
+              aria-label="Ir para página anterior"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.previousPage()}
@@ -213,7 +213,7 @@ export function DataTable<TData, TValue>({
               <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to next page"
+              aria-label="Ir para próxima página"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.nextPage()}
@@ -222,7 +222,7 @@ export function DataTable<TData, TValue>({
               <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to last page"
+              aria-label="Ir para última página"
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}

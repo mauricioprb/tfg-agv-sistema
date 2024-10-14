@@ -1,13 +1,15 @@
 "use client";
 
 import PageContainer from "@/components/layout/page-container";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
 import { RadialGraph } from "../radial-graph";
 import { getFormattedDate } from "@/lib/dateUtils";
 import { SpeedometerGraph } from "../speedometer-graph";
 import { MonitorTrack } from "@/components/monitor-track";
+import Link from "next/dist/client/link";
+import { cn } from "@/lib/utils";
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
@@ -90,10 +92,15 @@ export default function OverviewPage() {
                     <div className="text-2xl font-bold">100m</div>
                   </CardContent>
                 </Card>
-                <Button className="w-full">
+                <Link
+                  href={"/dashboard/registro-atividades"}
+                  className={
+                    cn(buttonVariants({ variant: "default" })) + " w-full"
+                  }
+                >
                   Registro de atividades
                   <Icons.arrowRight className="ml-2" />
-                </Button>
+                </Link>
               </div>
             </div>
           </div>

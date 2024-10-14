@@ -2,10 +2,13 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icons } from "@/components/icons";
 import PageContainer from "@/components/layout/page-container";
 import { MonitorTrack } from "@/components/monitor-track";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import Link from "next/dist/client/link";
+import GestaoTransporteTable from "../gestao-transporte-table";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -81,10 +84,15 @@ export default async function RegistroAtividadesListingPage() {
                 <Icons.chave className="w-4 h-4 mr-2" />
                 Manutenção
               </Button>
-              <Button className="bg-primary w-full">
+              <Link
+                href={"/dashboard/gestao-transporte/novo"}
+                className={
+                  cn(buttonVariants({ variant: "default" })) + " w-full"
+                }
+              >
                 <Icons.add className="w-4 h-4 mr-2" />
                 Novo Transporte
-              </Button>
+              </Link>
             </div>
             <Card className="w-full h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -149,6 +157,11 @@ export default async function RegistroAtividadesListingPage() {
             </Card>
           </div>
         </div>
+        <Separator />
+        <h2 className="text-lg font-medium text-muted-foreground">
+          Histórico de Transportes
+        </h2>
+        <GestaoTransporteTable data={[]} totalData={0} />
       </div>
     </PageContainer>
   );
