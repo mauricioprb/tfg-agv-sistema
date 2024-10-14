@@ -29,11 +29,11 @@ export default function OverviewPage() {
             </Button>
           </div>
         </div>
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
           <div className="space-y-4">
-            <div className="col-span-4 md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="col-span-4 md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-5">
               <RadialGraph />
-              <div className="grid grid-rows-2 gap-4">
+              <div className="grid grid-rows-2 gap-5">
                 <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -67,7 +67,7 @@ export default function OverviewPage() {
                 </Card>
               </div>
               <SpeedometerGraph />
-              <div className="grid grid-rows-2 gap-4">
+              <div className="grid grid-rows-2 gap-5">
                 <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -97,8 +97,8 @@ export default function OverviewPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <Card className="w-full">
+          <div className="flex flex-col gap-5">
+            <Card className="w-full md:min-h-[150px]">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex mb-4">
                   <Icons.split className="mr-2 h-5 w-5 text-muted-foreground" />
@@ -109,7 +109,7 @@ export default function OverviewPage() {
                 <p className="text-muted-foreground text-sm mb-2">
                   Carga / Destino
                 </p>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5">
                   <h2 className="text-2xl font-bold">Caixa</h2>
                   <Icons.arrowRight />
                   <h2 className="text-2xl font-bold">Área de descarga B</h2>
@@ -125,7 +125,7 @@ export default function OverviewPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="mb-4">
+                <div className="mb-12">
                   <div className="md:scale-75 3xl:scale-100 2xl:scale-75 sm:scale-50 scale-50 flex justify-center">
                     <MonitorTrack />
                   </div>
