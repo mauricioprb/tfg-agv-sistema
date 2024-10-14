@@ -4,7 +4,6 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { RegistroAtividades } from "@/constants/data";
 import { fakeOperadores } from "@/constants/mock-api";
-import { searchParamsCache } from "@/lib/searchparams";
 import RegistroAtividadesTable from "../registro-atividades-tables";
 
 const breadcrumbItems = [
@@ -12,20 +11,10 @@ const breadcrumbItems = [
   { title: "Registro de Atividades", link: "/dashboard/registro-atividades" },
 ];
 
-export default async function EmployeeListingPage() {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("q");
-  const pageLimit = searchParamsCache.get("limit");
-
-  const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search }),
-  };
-
-  const data = await fakeOperadores.getOperadores(filters);
-  const totalUsers = data.total_operadores;
-  const employee: RegistroAtividades[] = data.operadores;
+export default async function RegistroAtividadesListingPage() {
+  const data = await fakeOperadores.getOperadores({ page: 1, limit: 10 });
+  const total = data.total_operadores;
+  const registros: RegistroAtividades[] = data.operadores;
 
   return (
     <PageContainer scrollable>
@@ -39,7 +28,7 @@ export default async function EmployeeListingPage() {
           />
         </div>
         <Separator />
-        <RegistroAtividadesTable data={employee} totalData={totalUsers} />
+        <RegistroAtividadesTable data={registros} totalData={total} />
       </div>
     </PageContainer>
   );

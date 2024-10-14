@@ -29,7 +29,9 @@ export function SpeedometerGraph() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Velocidade Atual</CardTitle>
+        <CardTitle className="text-muted-foreground font-medium">
+          Velocidade Atual
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

@@ -22,7 +22,7 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 const obterCorBateria = (nivelBateria: number) => {
   if (nivelBateria < 15) return "hsl(var(--destructive))";
   if (nivelBateria < 30) return "hsl(var(--warning))";
-  return "hsl(var(--chart-2))";
+  return "hsl(var(--success))";
 };
 
 const dadosBateria = [{ nivelBateria: 80, fill: obterCorBateria(80) }];
@@ -37,7 +37,9 @@ export function RadialGraph() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Nível de Bateria</CardTitle>
+        <CardTitle className="text-muted-foreground font-medium">
+          Nível de Bateria
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -99,9 +101,9 @@ export function RadialGraph() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm text-white">
         <div className="flex items-center gap-2 font-medium text-muted-foreground leading-none">
-          Status da bateria <BatteryCharging className="h-4 w-4" />
+          Tensão da bateria <BatteryCharging className="h-4 w-4" />
         </div>
-        <div className="leading-none text-primary-100">
+        <div className="leading-none text-foreground font-semibold">
           A bateria está com 11,2V
         </div>
       </CardFooter>

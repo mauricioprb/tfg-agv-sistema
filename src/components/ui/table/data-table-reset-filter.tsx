@@ -14,7 +14,7 @@ export function DataTableResetFilter({
     <>
       {isFilterActive ? (
         <Button variant="outline" onClick={onReset}>
-          Reset Filters
+          Limpar filtro
         </Button>
       ) : null}
     </>

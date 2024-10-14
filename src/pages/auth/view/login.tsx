@@ -6,6 +6,7 @@ import { Logo } from "@/components/layout/logo";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
+import { handleAuthError } from "@/auth/errorHandler";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -17,11 +18,12 @@ export default function LoginPage() {
   const error = searchParams ? searchParams.get("error") : null;
 
   useEffect(() => {
-    if (error === "AccessDenied") {
+    if (error) {
+      const toastData = handleAuthError(error);
       toast({
-        title: "Acesso Negado",
-        description: "Você não tem permissão para fazer login.",
-        variant: "destructive", // Escolha o estilo apropriado
+        title: toastData.title,
+        description: toastData.description,
+        variant: toastData.variant,
       });
     }
   }, [error]);

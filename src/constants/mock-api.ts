@@ -88,13 +88,11 @@ export const fakeOperadores = {
   async getOperadores({
     page = 1,
     limit = 10,
-    search,
   }: {
     page?: number;
     limit?: number;
-    search?: string;
   }) {
-    const allOperadores = await this.getAll({ search });
+    const allOperadores = await this.getAll({});
     const totalOperadores = allOperadores.length;
 
     // Pagination logic

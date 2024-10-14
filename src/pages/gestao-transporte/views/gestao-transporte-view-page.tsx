@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import GestaoTransporteForm from "./gestao-transporte-form";
+import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -10,11 +10,11 @@ const breadcrumbItems = [
 
 export default function GestaoTransporteViewPage() {
   return (
-    <ScrollArea className="h-full">
-      <div className="flex-1 space-y-4 p-6">
+    <PageContainer scrollable>
+      <div className="flex-1 space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <GestaoTransporteForm />
       </div>
-    </ScrollArea>
+    </PageContainer>
   );
 }
