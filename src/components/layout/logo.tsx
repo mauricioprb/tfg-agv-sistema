@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function Logo() {
   return (
-    <Link href="#">
+    <Link href="/dashboard">
       <svg
         className="h-9 w-9"
         width="500"

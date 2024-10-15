@@ -144,11 +144,11 @@ export default function OverviewPage() {
                   </p>
                   <p className="text-muted-foreground text-sm flex items-center">
                     <Icons.carga className="w-6 h-6 mr-2" />
-                    Área de Carga
+                    Carga
                   </p>
                   <p className="text-muted-foreground text-sm flex items-center">
                     <Icons.descarga className="w-6 h-6 mr-2" />
-                    Áreas de Descarga
+                    Descarga
                   </p>
                   <p className="text-muted-foreground text-sm flex items-center">
                     <Icons.manutencao className="w-6 h-6 mr-2" />
