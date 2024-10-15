@@ -9,7 +9,7 @@ datasource db {
 
 // Padrão do next-auth
 model User {
-  id            String    @id @default(uuid()) @map("id")
+  id            String    @id @default(uuid())
   name          String?   @map("nome")
   email         String    @unique @map("email")
   emailVerified DateTime? @map("email_verificado")
@@ -18,6 +18,7 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now()) @map("criado_em")
   updatedAt     DateTime  @updatedAt @map("atualizado_em")
+  AGV           AGV[]
 
   @@map("usuarios")
 }
@@ -54,4 +55,89 @@ model Session {
   updatedAt DateTime @updatedAt @map("atualizado_em")
 
   @@map("sessoes")
+}
+
+model AGV {
+  id            String       @id @default(uuid())
+  status        String
+  velocidade    Float
+  tensaoBateria Float        @map("tensao_bateria")
+  tempoOperacao Float        @map("tempo_operacao")
+  usuarioId     String       @map("usuario_id")
+  transportes   Transporte[]
+  usuario       User         @relation(fields: [usuarioId], references: [id])
+
+  criadoEm          DateTime            @default(now()) @map("criado_em")
+  atualizadoEm      DateTime            @updatedAt @map("atualizado_em")
+  Erro              Erro[]
+  RegistroAtividade RegistroAtividade[]
+
+  @@map("agv")
+}
+
+model Transporte {
+  id                 String              @id @default(uuid())
+  tempo              Float
+  rotaId             String              @map("rota_id")
+  status             String
+  finalizado         Boolean
+  cargaId            String              @map("carga_id")
+  agvId              String              @map("agv_id")
+  rota               Rota                @relation(fields: [rotaId], references: [id])
+  agv                AGV                 @relation(fields: [agvId], references: [id])
+  carga              Carga               @relation(fields: [cargaId], references: [id])
+  registroAtividades RegistroAtividade[]
+
+  criadoEm DateTime @default(now()) @map("criado_em")
+
+  @@map("transportes")
+}
+
+model Rota {
+  id          String       @id @default(uuid())
+  nome        String
+  transportes Transporte[]
+
+  criadoEm DateTime @default(now()) @map("criado_em")
+
+  @@map("rotas")
+}
+
+model Carga {
+  id          String       @id @default(uuid())
+  comprimento Float
+  peso        Float
+  altura      Float        @map("altura")
+  largura     Float        @map("largura")
+  tipo        String       @map("tipo")
+  transportes Transporte[]
+
+  criadoEm DateTime @default(now()) @map("criado_em")
+
+  @@map("cargas")
+}
+
+model RegistroAtividade {
+  id           String  @id @default(uuid())
+  evento       String
+  agvId        String  @map("agv_id")
+  agv          AGV     @relation(fields: [agvId], references: [id])
+  transporteId String? @map("transporte_id")
+
+  criadoEm   DateTime    @default(now()) @map("criado_em")
+  Transporte Transporte? @relation(fields: [transporteId], references: [id])
+
+  @@map("registro_atividades")
+}
+
+model Erro {
+  id        String @id @default(uuid())
+  codigo    String @map("codigo_erro")
+  descricao String
+  agvId     String @map("agv_id")
+  agv       AGV    @relation(fields: [agvId], references: [id])
+
+  criadoEm DateTime @default(now()) @map("criado_em")
+
+  @@map("erros")
 }
