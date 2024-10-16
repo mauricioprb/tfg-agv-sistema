@@ -1,3 +1,5 @@
+"use client";
+
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icons } from "@/components/icons";
 import PageContainer from "@/components/layout/page-container";
@@ -9,13 +11,24 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import Link from "next/dist/client/link";
 import GestaoTransporteTable from "../gestao-transporte-table";
+import { useEffect, useState } from "react";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Gestão Transporte", link: "/dashboard/gestao-transporte" },
 ];
 
-export default async function RegistroAtividadesListingPage() {
+export default function GestaoTransportePage() {
+  const [chegou, setChegou] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChegou(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <PageContainer scrollable>
       <div className="space-y-6">
@@ -54,13 +67,17 @@ export default async function RegistroAtividadesListingPage() {
               <CardContent>
                 <div className="mb-12">
                   <div className="md:scale-75 3xl:scale-100 2xl:scale-75 sm:scale-50 scale-50 flex justify-center">
-                    <MonitorTrack />
+                    <MonitorTrack
+                      rota={"descarga a"}
+                      chegou={chegou}
+                      destino="descarga a"
+                    />
                   </div>
                 </div>
                 <div className="flex gap-6 flex-wrap justify-center">
                   <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.agv_logo className="w-6 h-6 mr-2" />
-                    AGV
+                    <Icons.rfid className="w-6 h-6 mr-2" />
+                    RFID
                   </p>
                   <p className="text-muted-foreground text-sm flex items-center">
                     <Icons.carga className="w-6 h-6 mr-2" />

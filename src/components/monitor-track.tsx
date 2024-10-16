@@ -1,126 +1,109 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { Icons } from "./icons";
+import { useToast } from "@/components/ui/use-toast";
 
-export function MonitorTrack() {
-  const [position, setPosition] = useState(0);
-  const [iconsStatus, setIconsStatus] = useState({
-    carga: false,
-    manutencao: false,
-    descargaA: false,
-    descargaB: false,
-  });
-  const requestRef = useRef<number | null>(null);
-  const previousTimeRef = useRef<number | null>(null);
-  const speed = 0.0002;
+interface MonitorTrackProps {
+  rota: "carga" | "manutencao" | "descarga a" | "descarga b";
+  destino: "carga" | "manutencao" | "descarga a" | "descarga b";
+  chegou: boolean;
+}
 
-  const iconCoordinates = {
-    carga: { x: 554, y: 128 },
-    manutencao: { x: 20, y: 128 },
-    descargaA: { x: 126, y: 10 },
-    descargaB: { x: 126, y: 255 },
-  };
+export function MonitorTrack({ rota, destino, chegou }: MonitorTrackProps) {
+  const { toast } = useToast();
 
-  const iconRadius = 20; // Raio de tolerância para colisão do AGV com os ícones
-
-  const animate = (time: number) => {
-    if (previousTimeRef.current != null) {
-      const deltaTime = time - previousTimeRef.current;
-      setPosition((prev) => {
-        const newPos = prev + deltaTime * speed;
-        checkIconCollision(newPos); // Verifica colisões
-        return newPos >= 1 ? 0 : newPos;
+  useEffect(() => {
+    if (chegou) {
+      toast({
+        title: "Destino alcançado!",
+        description: `O AGV chegou ao destino ${destino}.`,
       });
     }
-    previousTimeRef.current = time;
-    requestRef.current = requestAnimationFrame(animate);
+  }, [chegou, destino, toast]);
+
+  const blinkingAnimation = {
+    fill: ["#ff7b39", "hsl(215 27.9% 16.9%)", "#ff7b39"],
+    transition: {
+      duration: 0.8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
   };
 
-  // Iniciar a animação
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-      }
-    };
-  }, []);
+  const arrivedBlinkAnimation = {
+    fill: ["#2eb88a", "hsl(215 27.9% 16.9%)"],
+    transition: {
+      duration: 0.5,
+      repeat: 10,
+      ease: "easeInOut",
+      repeatType: "reverse",
+    },
+  };
 
-  const checkIconCollision = (newPos: number) => {
-    const agvCoords = getCoordinates(newPos);
-    const updatedIconsStatus = { ...iconsStatus };
-
-    // Verificar colisão com cada ícone
-    Object.keys(iconCoordinates).forEach((icon) => {
-      const iconCoord = iconCoordinates[icon as keyof typeof iconCoordinates];
-      const distance = Math.sqrt(
-        Math.pow(agvCoords.x - iconCoord.x, 2) +
-          Math.pow(agvCoords.y - iconCoord.y, 2)
-      );
-
-      // Se o AGV colidir com o ícone (dentro do raio), marque o ícone como atingido
-      if (distance <= iconRadius) {
-        updatedIconsStatus[icon as keyof typeof iconsStatus] = true; // Define como chegou
-      } else {
-        updatedIconsStatus[icon as keyof typeof iconsStatus] = false; // Volta ao estado original
-      }
-    });
-
-    // Apenas atualiza o estado se houver mudança para evitar re-renderizações desnecessárias
-    if (JSON.stringify(updatedIconsStatus) !== JSON.stringify(iconsStatus)) {
-      setIconsStatus(updatedIconsStatus);
+  const getAnimation = (segment: string) => {
+    if (destino === segment && chegou) {
+      return arrivedBlinkAnimation;
     }
+    if (rota === segment && !chegou) {
+      return blinkingAnimation;
+    }
+    return undefined;
   };
 
   return (
-    <div>
-      <svg
-        id="Camada_1"
-        width="603"
-        height="284"
-        viewBox="0 0 603 284"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          id="track"
-          d="M581.6 139.809V143.609H374.8C366.6 143.609 358.9 146.709 353.1 152.409C347.2 158.209 343.9 165.809 343.9 174.009V232.309C343.8 237.109 342.8 241.509 340.8 245.709C338.9 249.809 336.3 253.509 333 256.609C329.7 259.709 326 262.109 321.7 263.709C317.7 265.209 313.4 266.109 309 266.109C308.6 266.109 125.9 266.109 125.9 266.109V262.209H309C325.7 262.209 339.5 248.909 340 232.109V173.509C340 169.009 341 164.609 342.8 160.509C344.6 156.509 347.1 152.909 350.3 149.709C352.8 147.209 355.8 145.209 359 143.609H21V139.809H359C355.9 138.209 353 136.209 350.3 133.709C347 130.609 344.5 126.909 342.8 122.909C341 118.909 340 114.609 340 110.209V52.1093C339.7 43.8093 336.4 36.2093 330.3 30.5093C324.4 24.9093 316.8 21.8093 308.6 21.8093H125.9V18.0093H308.1C312.9 17.9093 317.4 18.6093 321.8 20.4093C325.9 22.0093 329.7 24.4093 333.1 27.5093C336.4 30.6093 339 34.3093 340.9 38.4093C342.8 42.7093 343.9 47.2093 344 51.8093V109.209C344 117.409 347.3 125.009 353.2 130.809C359.1 136.409 366.7 139.609 374.9 139.609H581.6V139.809Z"
-          fill="#94A1AD"
-        />
-        <g transform="translate(554, 128)">
-          <Icons.carga chegou={iconsStatus.carga} />
-        </g>
+    <svg
+      width="603"
+      height="284"
+      viewBox="0 0 603 284"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <motion.path
+        id="trecho-descarga-b"
+        d="M374.8 144C366.6 144 358.9 147.1 353.1 152.8C347.2 158.6 343.9 166.2 343.9 174.4V232.7C343.8 237.5 342.8 241.9 340.8 246.1C338.9 250.2 336.3 253.9 333 257C329.7 260.1 326 262.5 321.7 264.1C317.7 265.6 313.4 266.5 309 266.5C308.6 266.5 125.9 266.5 125.9 266.5V262.6H309C325.7 262.6 339.5 249.3 340 232.5V173.9C340 169.4 341 165 342.8 160.9C344.6 156.9 347.1 153.3 350.3 150.1C352.8 147.6 355.8 145.6 359 144H374.8Z"
+        fill="hsl(215 27.9% 16.9%)"
+        animate={getAnimation("descarga b")}
+      />
+      <motion.path
+        id="trecho-descarga-a"
+        d="M374.8 140H359C355.8 138.4 352.8 136.4 350.3 133.9C347.1 130.7 344.6 127.1 342.8 123.1C341 119 340 114.6 340 110.1V51.5C339.5 34.7 325.7 21.4 309 21.4H125.9V17.5C125.9 17.5 308.6 17.5 309 17.5C313.4 17.5 317.7 18.4 321.7 19.9C326 21.5 329.7 23.9 333 27C336.3 30.1 338.9 33.8 340.8 37.9C342.8 42.1 343.8 46.5 343.9 51.3V109.6C343.9 117.8 347.2 125.4 353.1 131.2C358.9 136.9 366.6 140 374.8 140Z"
+        fill="hsl(215 27.9% 16.9%)"
+        animate={getAnimation("descarga a")}
+      />
+      <motion.path
+        d="M375.8 140H21.2V144H375.8V140Z"
+        id="trecho-manutencao"
+        fill="hsl(215 27.9% 16.9%)"
+        animate={getAnimation("manutencao")}
+      />
+      <motion.path
+        d="M581.8 140H375.8V144H581.8V140Z"
+        id="trecho-carga"
+        fill="hsl(215 27.9% 16.9%)"
+        animate={getAnimation("carga")}
+      />
 
-        <g transform="translate(20, 128)">
-          <Icons.manutencao chegou={iconsStatus.manutencao} />
-        </g>
+      <g transform="translate(555, 128)">
+        <Icons.carga chegou={destino === "carga" && chegou} />
+      </g>
 
-        <g transform="translate(126, 10)">
-          <Icons.descarga_a chegou={iconsStatus.descargaA} />
-        </g>
+      <g transform="translate(20, 128)">
+        <Icons.manutencao chegou={destino === "manutencao" && chegou} />
+      </g>
 
-        <g transform="translate(126, 255)">
-          <Icons.descarga_b chegou={iconsStatus.descargaB} />
-        </g>
+      <g transform="translate(126, 10)">
+        <Icons.descarga_a chegou={destino === "descarga a" && chegou} />
+      </g>
 
-        <g
-          transform={`translate(${getCoordinates(position).x}, ${getCoordinates(position).y})`}
-        >
-          <Icons.agv_logo />
-        </g>
-      </svg>
-    </div>
+      <g transform="translate(126, 255)">
+        <Icons.descarga_b chegou={destino === "descarga b" && chegou} />
+      </g>
+
+      <g transform="translate(362, 128)">
+        <Icons.rfid />
+      </g>
+    </svg>
   );
-
-  function getCoordinates(percentage: number) {
-    const pathElement = document.getElementById(
-      "track"
-    ) as unknown as SVGPathElement;
-    if (pathElement) {
-      const pathLength = pathElement.getTotalLength();
-      const point = pathElement.getPointAtLength(percentage * pathLength);
-      return { x: point.x - 15, y: point.y - 15 };
-    }
-    return { x: 0, y: 0 };
-  }
 }

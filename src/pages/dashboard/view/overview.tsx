@@ -10,9 +10,19 @@ import { SpeedometerGraph } from "../speedometer-graph";
 import { MonitorTrack } from "@/components/monitor-track";
 import Link from "next/dist/client/link";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
+  const [chegou, setChegou] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChegou(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <PageContainer scrollable>
@@ -133,14 +143,18 @@ export default function OverviewPage() {
               </CardHeader>
               <CardContent>
                 <div className="mb-12">
-                  <div className="md:scale-75 3xl:scale-100 2xl:scale-75 sm:scale-50 scale-50 flex justify-center">
-                    <MonitorTrack />
+                  <div className="flex justify-center">
+                    <MonitorTrack
+                      rota={"descarga a"}
+                      chegou={chegou}
+                      destino="descarga a"
+                    />
                   </div>
                 </div>
                 <div className="flex gap-6 flex-wrap justify-center">
                   <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.agv_logo className="w-6 h-6 mr-2" />
-                    AGV
+                    <Icons.rfid className="w-6 h-6 mr-2" />
+                    RFID
                   </p>
                   <p className="text-muted-foreground text-sm flex items-center">
                     <Icons.carga className="w-6 h-6 mr-2" />
