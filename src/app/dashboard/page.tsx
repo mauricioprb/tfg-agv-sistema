@@ -1,4 +1,4 @@
-import { OverviewPage } from "@/pages/dashboard/view";
+import { OverviewPage } from "@/sections/dashboard/view";
 
 export const metadata = {
   title: "AGV | Dashboard",

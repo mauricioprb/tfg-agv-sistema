@@ -1,4 +1,4 @@
-import { RegistroAtividadesListingPage } from "@/pages/registro-atividades/views";
+import { RegistroAtividadesListingPage } from "@/sections/registro-atividades/views";
 
 export const metadata = {
   title: "AGV | Registro de Atividades",

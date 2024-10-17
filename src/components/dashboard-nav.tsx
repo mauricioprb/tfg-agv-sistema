@@ -136,7 +136,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
           item={item}
           isMinimized={isMinimized}
           isExpanded={isExpanded}
-          path={path}
+          path={path || ""}
         />
       );
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { RegistroAtividades } from "@/constants/data";
+import { GestaoTransporte } from "@/constants/data";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<RegistroAtividades>[] = [
+export const columns: ColumnDef<GestaoTransporte>[] = [
   {
     accessorKey: "data",
     header: "Data",

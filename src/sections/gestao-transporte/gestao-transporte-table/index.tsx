@@ -5,7 +5,7 @@ import { GestaoTransporte } from "@/constants/data";
 import { columns } from "./columns";
 
 export default function GestaoTransporteTable({
-  data,
+  data = [],
   totalData,
 }: {
   data: GestaoTransporte[];

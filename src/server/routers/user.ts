@@ -9,6 +9,7 @@ export const userRouter = router({
     ];
   }),
   addUser: procedure.input(z.object({ name: z.string() })).mutation((opt) => {
-    const { input } = opt;
+    console.log(opt);
+    return { id: 1, name: opt.input.name };
   }),
 });

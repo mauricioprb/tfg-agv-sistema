@@ -19,6 +19,7 @@ const authConfig = {
     signIn: "/",
     error: "/",
   },
+  trustedHosts: ["localhost", "http://localhost:3000"],
   callbacks: {
     async signIn({ user, account }: { user: any; account: any }) {
       if (account.provider === "github") {

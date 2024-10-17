@@ -1,4 +1,4 @@
-import RegistroAtividadesViewPage from "@/pages/gestao-transporte/views/gestao-transporte-view-page";
+import RegistroAtividadesViewPage from "@/sections/gestao-transporte/views/gestao-transporte-view-page";
 
 export const metadata = {
   title: "AGV | Novo Transporte",

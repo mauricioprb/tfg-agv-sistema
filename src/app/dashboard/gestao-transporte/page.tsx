@@ -1,4 +1,4 @@
-import { GestaoTransportePage } from "@/pages/gestao-transporte/views";
+import { GestaoTransportePage } from "@/sections/gestao-transporte/views";
 
 export const metadata = {
   title: "AGV | Gestão de Transporte",

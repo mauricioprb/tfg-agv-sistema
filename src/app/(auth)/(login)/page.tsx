@@ -1,4 +1,4 @@
-import { LoginPage } from "@/pages/auth/view";
+import { LoginPage } from "@/sections/auth/view";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
