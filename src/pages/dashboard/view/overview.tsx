@@ -15,13 +15,23 @@ import { useEffect, useState } from "react";
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
   const [chegou, setChegou] = useState(false);
+  const [rota, setRota] = useState<
+    "carga" | "manutencao" | "descarga a" | "descarga b"
+  >("carga");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setChegou(true);
+    const timer1 = setTimeout(() => {
+      setRota("descarga a");
     }, 5000);
 
-    return () => clearTimeout(timer);
+    const timer2 = setTimeout(() => {
+      setChegou(true);
+    }, 10000);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, []);
 
   return (
@@ -68,10 +78,7 @@ export default function OverviewPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">0</div>
-                    <Button
-                      variant="link"
-                      className="p-0 text-primary-foreground"
-                    >
+                    <Button variant="link" className="p-0 text-foreground">
                       Ver detalhes
                       <Icons.arrowRight className="ml-2" />
                     </Button>
@@ -145,7 +152,7 @@ export default function OverviewPage() {
                 <div className="mb-12">
                   <div className="flex justify-center">
                     <MonitorTrack
-                      rota={"descarga a"}
+                      rota={rota}
                       chegou={chegou}
                       destino="descarga a"
                     />
