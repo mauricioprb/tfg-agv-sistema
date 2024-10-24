@@ -1,8 +1,8 @@
 import { router } from "./trpc";
-import { userRouter } from "./routers/user";
+import { mqttRouter } from "./routers/mqtt";
 
 export const appRouter = router({
-  user: userRouter,
+  mqtt: mqttRouter,
 });
 
 export type AppRouter = typeof appRouter;

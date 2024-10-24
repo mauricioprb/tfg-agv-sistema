@@ -77,7 +77,7 @@ model AGV {
 
 model Transporte {
   id                 String              @id @default(uuid())
-  tempo              Float
+  horaInicio         String
   rotaId             String              @map("rota_id")
   status             String
   finalizado         Boolean
