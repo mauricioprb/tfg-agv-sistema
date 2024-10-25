@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { createMqttClient } from "@/mqtt/mqttClient";
 import { RadialGraph } from "@/sections/dashboard/radial-graph";
 import { converterDadosBateria } from "@/lib/converterBateria";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function GraficoBateria() {
-  const [bateriaAtual, setBateriaAtual] = useState(0);
+  const [bateriaAtual, setBateriaAtual] = useState<number | null>(null);
 
   useEffect(() => {
     const client = createMqttClient();
@@ -36,7 +37,11 @@ export default function GraficoBateria() {
 
   return (
     <div>
-      <RadialGraph tensao={bateriaAtual} />
+      {bateriaAtual === null ? (
+        <Skeleton className="w-full h-full rounded-lg bg-border" />
+      ) : (
+        <RadialGraph tensao={bateriaAtual} />
+      )}
     </div>
   );
 }
