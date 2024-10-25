@@ -25,15 +25,25 @@ const obterCorBateria = (nivelBateria: number) => {
   return "hsl(var(--success))";
 };
 
-const dadosBateria = [{ nivelBateria: 80, fill: obterCorBateria(80) }];
+interface RadialGraphProps {
+  tensao: number;
+}
 
-const configuracaoGrafico = {
-  nivelBateria: {
-    label: "Nível de Bateria",
-  },
-} satisfies ChartConfig;
+export function RadialGraph({ tensao }: RadialGraphProps) {
+  const maxTensaoBateria = 12;
+  const nivelBateria = Math.min((tensao / maxTensaoBateria) * 100, 100);
 
-export function RadialGraph() {
+  const startAngle = 90;
+  const endAngle = 90 - (nivelBateria * 360) / 100;
+
+  const dadosBateria = [{ nivelBateria, fill: obterCorBateria(nivelBateria) }];
+
+  const configuracaoGrafico = {
+    nivelBateria: {
+      label: "Nível de Bateria",
+    },
+  } satisfies ChartConfig;
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -48,8 +58,8 @@ export function RadialGraph() {
         >
           <RadialBarChart
             data={dadosBateria}
-            startAngle={90}
-            endAngle={-200}
+            startAngle={startAngle}
+            endAngle={endAngle}
             innerRadius={80}
             outerRadius={110}
           >
@@ -81,7 +91,7 @@ export function RadialGraph() {
                           y={viewBox.cy}
                           className="dark:fill-white text-4xl font-bold"
                         >
-                          {dadosBateria[0].nivelBateria}%
+                          {nivelBateria.toFixed(0)}%
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -104,7 +114,7 @@ export function RadialGraph() {
           Tensão da bateria <BatteryCharging className="h-4 w-4" />
         </div>
         <div className="leading-none text-foreground font-semibold">
-          A bateria está com 11,2V
+          A bateria está com {tensao}V
         </div>
       </CardFooter>
     </Card>

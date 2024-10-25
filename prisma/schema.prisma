@@ -61,7 +61,6 @@ model AGV {
   id            String       @id @default(uuid())
   status        String
   velocidade    Float
-  tensaoBateria Float        @map("tensao_bateria")
   tempoOperacao Float        @map("tempo_operacao")
   usuarioId     String       @map("usuario_id")
   transportes   Transporte[]
@@ -76,21 +75,37 @@ model AGV {
 }
 
 model Transporte {
-  id                 String              @id @default(uuid())
-  horaInicio         String
-  rotaId             String              @map("rota_id")
-  status             String
-  finalizado         Boolean
-  cargaId            String              @map("carga_id")
-  agvId              String              @map("agv_id")
-  rota               Rota                @relation(fields: [rotaId], references: [id])
-  agv                AGV                 @relation(fields: [agvId], references: [id])
-  carga              Carga               @relation(fields: [cargaId], references: [id])
-  registroAtividades RegistroAtividade[]
+  id                   String              @id @default(uuid())
+  horaInicio           String
+  rotaId               String              @map("rota_id")
+  tensaoInicialBateria Float               @map("tensao_inicial_bateria")
+  tensaoFinalBateria   Float               @map("tensao_final_bateria")
+  status               String
+  finalizado           Boolean
+  agvId                String              @map("agv_id")
+  rota                 Rota                @relation(fields: [rotaId], references: [id])
+  agv                  AGV                 @relation(fields: [agvId], references: [id])
+  cargas               Carga[]
+  registroAtividades   RegistroAtividade[]
 
   criadoEm DateTime @default(now()) @map("criado_em")
 
   @@map("transportes")
+}
+
+model Carga {
+  id          String @id @default(uuid())
+  comprimento Float
+  peso        Float
+  altura      Float
+  tipo        String
+  quantidade  Int
+
+  criadoEm     DateTime    @default(now()) @map("criado_em")
+  Transporte   Transporte? @relation(fields: [transporteId], references: [id])
+  transporteId String?
+
+  @@map("cargas")
 }
 
 model Rota {
@@ -101,20 +116,6 @@ model Rota {
   criadoEm DateTime @default(now()) @map("criado_em")
 
   @@map("rotas")
-}
-
-model Carga {
-  id          String       @id @default(uuid())
-  comprimento Float
-  peso        Float
-  altura      Float        @map("altura")
-  largura     Float        @map("largura")
-  tipo        String       @map("tipo")
-  transportes Transporte[]
-
-  criadoEm DateTime @default(now()) @map("criado_em")
-
-  @@map("cargas")
 }
 
 model RegistroAtividade {

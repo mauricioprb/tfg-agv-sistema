@@ -1,12 +1,17 @@
+interface Bateria {
+  bateria: number;
+}
+
 export class BateriaService {
-  processBatteryData(data: any) {
-    const batteryLevel = data.level;
-    if (batteryLevel < 20) {
-      console.warn("Bateria baixa!");
-    }
+  converterDadosBateria(data: Bateria) {
+    const rawData = data.bateria;
+    const maxRawData = 1023;
+    const maxTensao = 25;
+
+    const tensaoAtual = (rawData / maxRawData) * maxTensao;
+
     return {
-      level: batteryLevel,
-      status: batteryLevel < 20 ? "Baixa" : "Normal",
+      tensao: tensaoAtual.toFixed(2),
     };
   }
 }

@@ -4,13 +4,13 @@ import PageContainer from "@/components/layout/page-container";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
-import { RadialGraph } from "../radial-graph";
 import { getFormattedDate } from "@/lib/dateUtils";
 import { SpeedometerGraph } from "../speedometer-graph";
 import { MonitorTrack } from "@/components/monitor-track";
 import Link from "next/dist/client/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import GraficoBateria from "@/components/graficos/grafico-bateria";
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
@@ -45,7 +45,7 @@ export default function OverviewPage() {
             <h3 className="text-muted-foreground">{currentDate}</h3>
           </div>
           <div className="hidden items-center space-x-2 md:flex">
-            <Button variant="destructive" className="font-bold ">
+            <Button variant="destructive" className="font-bold">
               <Icons.parar className="mr-2" />
               PARAR
             </Button>
@@ -54,7 +54,7 @@ export default function OverviewPage() {
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
           <div className="space-y-4">
             <div className="col-span-4 md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <RadialGraph />
+              <GraficoBateria />
               <div className="grid grid-rows-2 gap-5">
                 <Card className="w-full">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
