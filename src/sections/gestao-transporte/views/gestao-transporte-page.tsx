@@ -66,7 +66,7 @@ export default function GestaoTransportePage() {
               </CardHeader>
               <CardContent>
                 <div className="mb-12">
-                  <div className="md:scale-75 3xl:scale-100 2xl:scale-75 sm:scale-50 scale-50 flex justify-center">
+                  <div className="flex justify-center">
                     <MonitorTrack
                       rota={"descarga a"}
                       chegou={chegou}
@@ -132,11 +132,11 @@ export default function GestaoTransportePage() {
                 <div className="flex flex-col gap-4">
                   <Button>
                     <Icons.pausar className="w-4 h-4 mr-2" />
-                    Pausar Operação
+                    Pausar
                   </Button>
                   <Button variant="destructive">
                     <Icons.parar className="w-4 h-4 mr-2" />
-                    Calcelar Operação
+                    Calcelar
                   </Button>
                 </div>
                 <Separator className="my-8 col-span-2" />
