@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Bug,
   Check,
+  CirclePlay,
   Command,
   DatabaseZap,
   LayoutDashboardIcon,
@@ -420,4 +421,5 @@ export const Icons = {
       </defs>
     </svg>
   ),
+  start: CirclePlay,
 };

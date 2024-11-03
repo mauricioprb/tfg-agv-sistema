@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/dist/client/link";
 import GestaoTransporteTable from "../gestao-transporte-table";
 import { useEffect, useState } from "react";
+import { ModalTransporte } from "@/components/modal-transporte";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -20,7 +21,7 @@ const breadcrumbItems = [
 
 export default function GestaoTransportePage() {
   const [chegou, setChegou] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
       setChegou(true);
@@ -28,6 +29,12 @@ export default function GestaoTransportePage() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Função para abrir o modal
+  const handleOpenModal = () => setIsModalOpen(true);
+
+  // Função para fechar o modal
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <PageContainer scrollable>
@@ -130,13 +137,13 @@ export default function GestaoTransportePage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <Button>
-                    <Icons.pausar className="w-4 h-4 mr-2" />
-                    Pausar
+                  <Button onClick={handleOpenModal}>
+                    <Icons.start className="w-4 h-4 mr-2" />
+                    Iniciar
                   </Button>
                   <Button variant="destructive">
                     <Icons.parar className="w-4 h-4 mr-2" />
-                    Calcelar
+                    Cancelar
                   </Button>
                 </div>
                 <Separator className="my-8 col-span-2" />
@@ -180,6 +187,9 @@ export default function GestaoTransportePage() {
         </h2>
         <GestaoTransporteTable data={[]} totalData={0} />
       </div>
+
+      {/* Componente ModalTransporte separado */}
+      <ModalTransporte isOpen={isModalOpen} onClose={handleCloseModal} />
     </PageContainer>
   );
 }

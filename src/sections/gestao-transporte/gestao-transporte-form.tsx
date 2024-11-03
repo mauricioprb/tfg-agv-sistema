@@ -23,14 +23,21 @@ import {
 } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { trpc } from "@/server/client";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const formSchema = z.object({
-  destino: z.enum(["area_a", "area_b"], {
+  tipo: z.enum(["Caixa", "Granel", "Objeto único"], {
     required_error: "Campo obrigatório",
   }),
-  tipo: z.enum(["caixa", "granel", "objeto_unico"], {
-    required_error: "Campo obrigatório",
-  }),
+  quantidade: z
+    .number({
+      required_error: "Campo obrigatório",
+      invalid_type_error: "Por favor, insira um número válido",
+    })
+    .positive("A quantidade deve ser um valor positivo.")
+    .min(1, "A quantidade deve ser pelo menos 1."),
   comprimento: z
     .number({
       required_error: "Campo obrigatório",
@@ -62,11 +69,12 @@ const formSchema = z.object({
 });
 
 export default function GestaoTransporteForm() {
+  const { toast } = useToast(); // Hook para exibir toast
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      destino: undefined,
       tipo: undefined,
+      quantidade: undefined,
       comprimento: undefined,
       largura: undefined,
       altura: undefined,
@@ -74,8 +82,42 @@ export default function GestaoTransporteForm() {
     },
   });
 
+  const criarCargaMutation = trpc.carga.criarCarga.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Sucesso",
+        description: "Carga criada com sucesso!",
+      });
+      form.reset();
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao criar a carga. Tente novamente.",
+        action: <ToastAction altText="Tente novamente">OK</ToastAction>,
+      });
+    },
+  });
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    setIsLoading(true);
+    criarCargaMutation.mutate(
+      {
+        tipo: values.tipo,
+        quantidade: values.quantidade,
+        comprimento: values.comprimento,
+        largura: values.largura,
+        altura: values.altura,
+        peso: values.peso,
+      },
+      {
+        onSettled: () => {
+          setIsLoading(false);
+        },
+      }
+    );
   }
 
   return (
@@ -90,30 +132,6 @@ export default function GestaoTransporteForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
-                name="destino"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Destino</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o destino" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="area_a">
-                          Área de descarga A
-                        </SelectItem>
-                        <SelectItem value="area_b">
-                          Área de descarga B
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
                 control={form.control}
                 name="tipo"
                 render={({ field }) => (
@@ -126,9 +144,9 @@ export default function GestaoTransporteForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="caixa">Caixa</SelectItem>
-                        <SelectItem value="granel">Granel</SelectItem>
-                        <SelectItem value="objeto_unico">
+                        <SelectItem value="Caixa">Caixa</SelectItem>
+                        <SelectItem value="Granel">Granel</SelectItem>
+                        <SelectItem value="Objeto único">
                           Objeto único
                         </SelectItem>
                       </SelectContent>
@@ -137,7 +155,29 @@ export default function GestaoTransporteForm() {
                   </FormItem>
                 )}
               />
-              <Separator className="md:col-span-2 col-span-1 my-6" />
+              <FormField
+                control={form.control}
+                name="quantidade"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantidade</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Quantidade de itens"
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Separator className="my-6" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <h3 className="md:col-span-2 col-span-1">Medidas</h3>
               <FormField
                 control={form.control}
@@ -220,7 +260,9 @@ export default function GestaoTransporteForm() {
                 )}
               />
             </div>
-            <Button type="submit">Setar transporte</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Carregando..." : "Setar transporte"}
+            </Button>
           </form>
         </Form>
       </CardContent>

@@ -1,17 +1,12 @@
-interface Bateria {
-  bateria: number;
-}
+import { prisma } from "@/lib/prisma";
 
 export class BateriaService {
-  converterDadosBateria(data: Bateria) {
-    const rawData = data.bateria;
-    const maxRawData = 1023;
-    const maxTensao = 25;
-
-    const tensaoAtual = (rawData / maxRawData) * maxTensao;
-
-    return {
-      tensao: tensaoAtual.toFixed(2),
-    };
+  static async salvarDadosAgv(tensao: number) {
+    return prisma.agv.update({
+      where: { id: "id_do_agv" },
+      data: {
+        tensaoBateria: tensao,
+      },
+    });
   }
 }

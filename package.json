@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev --turbo",
     "dev:docker": "docker compose -f docker-compose.dev.yml up",
+    "dev:migrate": "npx prisma migrate dev --name init",
     "add:usuario": "node src/scripts/addUser.js",
     "build": "next build",
     "start": "next start",

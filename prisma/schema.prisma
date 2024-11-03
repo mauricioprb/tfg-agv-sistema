@@ -9,35 +9,35 @@ datasource db {
 
 // Padrão do next-auth
 model User {
-  id            String    @id @default(uuid())
-  name          String?   @map("nome")
-  email         String    @unique @map("email")
-  emailVerified DateTime? @map("email_verificado")
-  image         String?   @map("imagem")
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now()) @map("criado_em")
-  updatedAt     DateTime  @updatedAt @map("atualizado_em")
-  AGV           AGV[]
+  id                String              @id @default(uuid())
+  name              String?             @map("nome")
+  email             String              @unique @map("email")
+  emailVerified     DateTime?           @map("email_verificado")
+  image             String?             @map("imagem")
+  accounts          Account[]
+  sessions          Session[]
+  createdAt         DateTime            @default(now()) @map("criado_em")
+  updatedAt         DateTime            @updatedAt @map("atualizado_em")
+  AGV               Agv[]
+  RegistroAtividade RegistroAtividade[]
 
   @@map("usuarios")
 }
 
 model Account {
-  userId            String  @map("usuario_id")
-  type              String  @map("tipo")
-  provider          String  @map("provedor")
-  providerAccountId String  @map("id_conta_provedor")
-  refresh_token     String? @map("refresh_token")
-  access_token      String? @map("access_token")
-  expires_at        Int?    @map("expira_em")
-  token_type        String? @map("tipo_token")
-  scope             String? @map("escopo")
-  id_token          String? @map("id_token")
-  session_state     String? @map("estado_sessao")
-
-  createdAt DateTime @default(now()) @map("criado_em")
-  updatedAt DateTime @updatedAt @map("atualizado_em")
+  userId            String   @map("usuario_id")
+  type              String   @map("tipo")
+  provider          String   @map("provedor")
+  providerAccountId String   @map("id_conta_provedor")
+  refresh_token     String?  @map("refresh_token")
+  access_token      String?  @map("access_token")
+  expires_at        Int?     @map("expira_em")
+  token_type        String?  @map("tipo_token")
+  scope             String?  @map("escopo")
+  id_token          String?  @map("id_token")
+  session_state     String?  @map("estado_sessao")
+  createdAt         DateTime @default(now()) @map("criado_em")
+  updatedAt         DateTime @updatedAt @map("atualizado_em")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -50,22 +50,21 @@ model Session {
   userId       String   @map("usuario_id")
   expires      DateTime @map("expira_em")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now()) @map("criado_em")
-  updatedAt DateTime @updatedAt @map("atualizado_em")
+  createdAt    DateTime @default(now()) @map("criado_em")
+  updatedAt    DateTime @updatedAt @map("atualizado_em")
 
   @@map("sessoes")
 }
 
-model AGV {
-  id            String       @id @default(uuid())
-  status        String
-  velocidade    Float
-  tempoOperacao Float        @map("tempo_operacao")
-  usuarioId     String       @map("usuario_id")
-  transportes   Transporte[]
-  usuario       User         @relation(fields: [usuarioId], references: [id])
-
+model Agv {
+  id                String              @id @default(uuid())
+  status            String
+  velocidade        Float
+  tensaoBateria     Float               @map("tensao_bateria")
+  tempoOperacao     Float               @map("tempo_operacao")
+  usuarioId         String              @map("usuario_id")
+  transportes       Transporte[]
+  usuario           User                @relation(fields: [usuarioId], references: [id])
   criadoEm          DateTime            @default(now()) @map("criado_em")
   atualizadoEm      DateTime            @updatedAt @map("atualizado_em")
   Erro              Erro[]
@@ -75,35 +74,33 @@ model AGV {
 }
 
 model Transporte {
-  id                   String              @id @default(uuid())
+  id                   String   @id @default(uuid())
   horaInicio           String
-  rotaId               String              @map("rota_id")
-  tensaoInicialBateria Float               @map("tensao_inicial_bateria")
-  tensaoFinalBateria   Float               @map("tensao_final_bateria")
+  rotaId               String   @map("rota_id")
+  tensaoInicialBateria Float    @map("tensao_inicial_bateria")
+  tensaoFinalBateria   Float    @map("tensao_final_bateria")
   status               String
   finalizado           Boolean
-  agvId                String              @map("agv_id")
-  rota                 Rota                @relation(fields: [rotaId], references: [id])
-  agv                  AGV                 @relation(fields: [agvId], references: [id])
-  cargas               Carga[]
-  registroAtividades   RegistroAtividade[]
-
-  criadoEm DateTime @default(now()) @map("criado_em")
+  agvId                String   @map("agv_id")
+  rota                 Rota     @relation(fields: [rotaId], references: [id])
+  agv                  Agv      @relation(fields: [agvId], references: [id])
+  cargas               Carga[]  @relation("TransporteCargas")
+  criadoEm             DateTime @default(now()) @map("criado_em")
 
   @@map("transportes")
 }
 
 model Carga {
-  id          String @id @default(uuid())
-  comprimento Float
-  peso        Float
-  altura      Float
-  tipo        String
-  quantidade  Int
-
-  criadoEm     DateTime    @default(now()) @map("criado_em")
-  Transporte   Transporte? @relation(fields: [transporteId], references: [id])
-  transporteId String?
+  id           String       @id @default(uuid())
+  comprimento  Float
+  peso         Float
+  altura       Float
+  largura      Float
+  tipo         String
+  quantidade   Int
+  transportes  Transporte[] @relation("TransporteCargas")
+  criadoEm     DateTime     @default(now()) @map("criado_em")
+  atualizadoEm DateTime     @updatedAt @map("atualizado_em")
 
   @@map("cargas")
 }
@@ -112,33 +109,30 @@ model Rota {
   id          String       @id @default(uuid())
   nome        String
   transportes Transporte[]
-
-  criadoEm DateTime @default(now()) @map("criado_em")
+  criadoEm    DateTime     @default(now()) @map("criado_em")
 
   @@map("rotas")
 }
 
 model RegistroAtividade {
-  id           String  @id @default(uuid())
-  evento       String
-  agvId        String  @map("agv_id")
-  agv          AGV     @relation(fields: [agvId], references: [id])
-  transporteId String? @map("transporte_id")
-
-  criadoEm   DateTime    @default(now()) @map("criado_em")
-  Transporte Transporte? @relation(fields: [transporteId], references: [id])
+  id        String   @id @default(uuid())
+  evento    String
+  criadoEm  DateTime @default(now()) @map("criado_em")
+  agvId     String?
+  usuarioId String?  @map("usuario_id")
+  usuario   User?    @relation(fields: [usuarioId], references: [id])
+  Agv       Agv?     @relation(fields: [agvId], references: [id])
 
   @@map("registro_atividades")
 }
 
 model Erro {
-  id        String @id @default(uuid())
-  codigo    String @map("codigo_erro")
+  id        String   @id @default(uuid())
+  codigo    String   @map("codigo_erro")
   descricao String
-  agvId     String @map("agv_id")
-  agv       AGV    @relation(fields: [agvId], references: [id])
-
-  criadoEm DateTime @default(now()) @map("criado_em")
+  agvId     String   @map("agv_id")
+  agv       Agv      @relation(fields: [agvId], references: [id])
+  criadoEm  DateTime @default(now()) @map("criado_em")
 
   @@map("erros")
 }

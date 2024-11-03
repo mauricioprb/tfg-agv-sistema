@@ -12,7 +12,7 @@ export default function GraficoBateria() {
   useEffect(() => {
     const client = createMqttClient();
 
-    client.subscribe("raspberry/bateria", (err) => {
+    client.subscribe("esp32/bateria", (err) => {
       if (!err) {
         console.log("Inscrito no tópico bateria");
       } else {
@@ -21,8 +21,9 @@ export default function GraficoBateria() {
     });
 
     client.on("message", (topic, message) => {
-      if (topic === "raspberry/bateria") {
+      if (topic === "esp32/bateria") {
         const dados = JSON.parse(message.toString());
+        console.log("Dados recebidos:", dados);
         const dadosConvertidos = converterDadosBateria(dados);
         setBateriaAtual(Number(dadosConvertidos.tensao));
       }

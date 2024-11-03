@@ -4,8 +4,8 @@ interface Bateria {
 
 export function converterDadosBateria(data: Bateria) {
   const rawData = data.bateria;
-  const maxRawData = 1023;
-  const maxTensao = 25;
+  const maxRawData = 3500;
+  const maxTensao = 12.4;
 
   const tensaoAtual = (rawData / maxRawData) * maxTensao;
 
