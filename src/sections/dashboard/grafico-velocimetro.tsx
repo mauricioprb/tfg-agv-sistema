@@ -11,13 +11,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
+interface GraficoVelocimetroProps {
+  velocidade?: number;
+}
+
 const obterCorVelocidade = (velocidade: number) => {
   if (velocidade < 10) return "hsl(var(--primary))";
   if (velocidade < 20) return "hsl(var(--primary))";
   return "hsl(var(--destructive))";
 };
-
-const dadosVelocidade = [{ velocidade: 0.86, fill: obterCorVelocidade(0.86) }];
 
 const configuracaoGrafico = {
   velocidade: {
@@ -25,7 +27,16 @@ const configuracaoGrafico = {
   },
 } satisfies ChartConfig;
 
-export function SpeedometerGraph() {
+export function GraficoVelocimetro({
+  velocidade = 0,
+}: GraficoVelocimetroProps) {
+  const dadosVelocidade = [
+    { velocidade, fill: obterCorVelocidade(velocidade) },
+  ];
+
+  const startAngle = 180;
+  const endAngle = 180 - velocidade * 180;
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -40,8 +51,8 @@ export function SpeedometerGraph() {
         >
           <RadialBarChart
             data={dadosVelocidade}
-            startAngle={180}
-            endAngle={40}
+            startAngle={startAngle}
+            endAngle={endAngle}
             innerRadius={80}
             outerRadius={130}
           >
@@ -70,7 +81,11 @@ export function SpeedometerGraph() {
                           y={viewBox.cy}
                           className="dark:fill-white text-2xl font-bold"
                         >
-                          {dadosVelocidade[0].velocidade} m/s
+                          {velocidade.toLocaleString("pt-BR", {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          })}{" "}
+                          m/s
                         </tspan>
                         <tspan
                           x={viewBox.cx}
