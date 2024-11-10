@@ -16,6 +16,9 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
+import { createMqttClient } from "@/mqtt/mqttClient";
+
+const MQTT_TOPIC = "agv/metricas";
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
@@ -23,6 +26,33 @@ export default function OverviewPage() {
   const [rota, setRota] = useState<
     "carga" | "manutencao" | "descarga a" | "descarga b"
   >("carga");
+
+  const [tempoIniciado, setTempoIniciado] = useState(false);
+
+  useEffect(() => {
+    const client = createMqttClient();
+
+    client.subscribe(MQTT_TOPIC, { qos: 0 }, (err) => {
+      if (err) {
+        console.error("Erro ao subscrever ao tópico:", err);
+      }
+    });
+
+    client.on("message", (topic, message) => {
+      if (topic === MQTT_TOPIC) {
+        try {
+          const data = JSON.parse(message.toString());
+          setTempoIniciado(data.status === "Em operação");
+        } catch (error) {
+          console.error("Erro ao parsear mensagem MQTT:", error);
+        }
+      }
+    });
+
+    return () => {
+      client.end();
+    };
+  }, []);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setRota("descarga a"), 5000);
@@ -45,7 +75,7 @@ export default function OverviewPage() {
           </div>
           <GraficoVelocimetro velocidade={0.5} />
           <div className="grid grid-rows-2 gap-5">
-            <TempoOperacaoCard />
+            <TempoOperacaoCard tempoIniciado={tempoIniciado} />
             <DistanciaCard />
             <Link
               href={"/dashboard/registro-atividades"}

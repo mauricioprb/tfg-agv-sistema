@@ -75,7 +75,6 @@ model Agv {
 
 model Transporte {
   id                   String   @id @default(uuid())
-  horaInicio           String
   rotaId               String   @map("rota_id")
   tensaoInicialBateria Float    @map("tensao_inicial_bateria")
   tensaoFinalBateria   Float    @map("tensao_final_bateria")

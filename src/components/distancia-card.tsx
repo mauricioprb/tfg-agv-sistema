@@ -1,7 +1,13 @@
+"use client";
+
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
 
-export function DistanciaCard() {
+interface DistanciaCardProps {
+  distancia?: number;
+}
+
+export function DistanciaCard({ distancia }: DistanciaCardProps) {
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -11,7 +17,7 @@ export function DistanciaCard() {
         <Icons.regua className="text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">100m</div>
+        <div className="text-2xl font-bold">{distancia ? distancia : 0}m</div>
       </CardContent>
     </Card>
   );
