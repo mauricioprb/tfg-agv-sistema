@@ -19,6 +19,7 @@ import { Icons } from "@/components/icons";
 import { createMqttClient } from "@/mqtt/mqttClient";
 
 const MQTT_TOPIC = "agv/metricas";
+const TIMEOUT_INTERVAL = 10000;
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
@@ -28,6 +29,8 @@ export default function OverviewPage() {
   >("carga");
 
   const [tempoIniciado, setTempoIniciado] = useState(false);
+  const [status, setStatus] = useState("Desligado");
+  const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
 
   useEffect(() => {
     const client = createMqttClient();
@@ -43,16 +46,26 @@ export default function OverviewPage() {
         try {
           const data = JSON.parse(message.toString());
           setTempoIniciado(data.status === "Em operação");
+          setStatus(data.status || "Desligado");
+          setLastUpdateTime(Date.now());
         } catch (error) {
           console.error("Erro ao parsear mensagem MQTT:", error);
         }
       }
     });
 
+    const intervalId = setInterval(() => {
+      if (Date.now() - lastUpdateTime > TIMEOUT_INTERVAL) {
+        setStatus("Desligado");
+        setTempoIniciado(false);
+      }
+    }, 1000);
+
     return () => {
       client.end();
+      clearInterval(intervalId);
     };
-  }, []);
+  }, [lastUpdateTime]);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setRota("descarga a"), 5000);
@@ -70,7 +83,7 @@ export default function OverviewPage() {
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
           <GraficoMovimentacoes />
           <div className="grid grid-rows-2 gap-5">
-            <StatusCard />
+            <StatusCard status={status} />
             <ErroCard />
           </div>
           <GraficoVelocimetro velocidade={0.5} />

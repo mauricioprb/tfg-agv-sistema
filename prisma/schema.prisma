@@ -59,9 +59,7 @@ model Session {
 model Agv {
   id                String              @id @default(uuid())
   status            String
-  velocidade        Float
-  tensaoBateria     Float               @map("tensao_bateria")
-  tempoOperacao     Float               @map("tempo_operacao")
+  tempoOperacao     Int                 @map("tempo_operacao")
   usuarioId         String              @map("usuario_id")
   transportes       Transporte[]
   usuario           User                @relation(fields: [usuarioId], references: [id])
