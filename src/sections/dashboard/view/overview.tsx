@@ -6,7 +6,6 @@ import { getFormattedDate } from "@/lib/dateUtils";
 import { Header } from "../header";
 import { GraficoMovimentacoes } from "@/components/graficos/grafico-movimentacoes";
 import { StatusCard } from "@/components/status-card";
-import { ErroCard } from "@/components/erro-card";
 import { GraficoVelocimetro } from "../grafico-velocimetro";
 import { TempoOperacaoCard } from "@/components/tempo-operacao-card";
 import { DistanciaCard } from "@/components/distancia-card";
@@ -17,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { createMqttClient } from "@/mqtt/mqttClient";
+import { AlertaCard } from "@/components/alerta-card";
 
 const MQTT_TOPIC = "agv/metricas";
 const INACTIVITY_TIMEOUT = 20000;
@@ -94,7 +94,7 @@ export default function OverviewPage() {
           <GraficoMovimentacoes />
           <div className="grid grid-rows-2 gap-5">
             <StatusCard status={status} />
-            <ErroCard />
+            <AlertaCard />
           </div>
           <GraficoVelocimetro velocidade={velocidade} />
           <div className="grid grid-rows-2 gap-5">

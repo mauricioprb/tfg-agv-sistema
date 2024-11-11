@@ -59,7 +59,7 @@ model Session {
 model Agv {
   id                  String              @id @default(uuid())
   status              String
-  tempoOperacao       Int                 @map("tempo_operacao")
+  tempoOperacao       Float               @default(0) @map("tempo_operacao")
   distanciaPercorrida Float               @map("distancia_percorrida")
   usuarioId           String              @map("usuario_id")
   transportes         Transporte[]
@@ -73,17 +73,15 @@ model Agv {
 }
 
 model Transporte {
-  id                   String   @id @default(uuid())
-  rotaId               String   @map("rota_id")
-  tensaoInicialBateria Float    @map("tensao_inicial_bateria")
-  tensaoFinalBateria   Float    @map("tensao_final_bateria")
-  status               String
-  finalizado           Boolean
-  agvId                String   @map("agv_id")
-  rota                 Rota     @relation(fields: [rotaId], references: [id])
-  agv                  Agv      @relation(fields: [agvId], references: [id])
-  cargas               Carga[]  @relation("TransporteCargas")
-  criadoEm             DateTime @default(now()) @map("criado_em")
+  id         String   @id @default(uuid())
+  rotaId     String   @map("rota_id")
+  status     String
+  finalizado Boolean
+  agvId      String   @map("agv_id")
+  rota       Rota     @relation(fields: [rotaId], references: [id])
+  agv        Agv      @relation(fields: [agvId], references: [id])
+  cargas     Carga[]  @relation("TransporteCargas")
+  criadoEm   DateTime @default(now()) @map("criado_em")
 
   @@map("transportes")
 }

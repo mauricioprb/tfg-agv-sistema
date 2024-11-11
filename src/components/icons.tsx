@@ -20,6 +20,7 @@ import {
   Split,
   TerminalSquare,
   Timer,
+  TriangleAlert,
   Wrench,
   X,
   XOctagon,
@@ -422,4 +423,5 @@ export const Icons = {
     </svg>
   ),
   start: CirclePlay,
+  alerta: TriangleAlert,
 };

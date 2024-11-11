@@ -39,14 +39,11 @@ export function CargaSelect({ form, cargas, isLoading }: CargaSelectProps) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {cargas
-                ?.map((carga) => carga.tipo)
-                .filter((tipo, index, self) => self.indexOf(tipo) === index)
-                .map((tipo) => (
-                  <SelectItem key={tipo} value={tipo}>
-                    {tipo}
-                  </SelectItem>
-                ))}
+              {cargas?.map((carga) => (
+                <SelectItem key={carga.id} value={carga.id}>
+                  {carga.tipo}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <FormMessage />

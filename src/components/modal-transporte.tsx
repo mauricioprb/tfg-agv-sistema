@@ -1,5 +1,4 @@
-"use client";
-
+import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -20,10 +19,8 @@ import { CargaSelect } from "./carga-select";
 
 const formSchema = z.object({
   carga: z.string().min(1, { message: "Campo obrigatório" }),
-  dimensoes: z.string().optional(),
-  destino: z.enum(["area_a", "area_b"], {
-    required_error: "Campo obrigatório",
-  }),
+  dimensoes: z.string().min(1, { message: "Campo obrigatório" }),
+  destino: z.string().min(1, { message: "Campo obrigatório" }),
 });
 
 interface ModalTransporteProps {
@@ -41,17 +38,39 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
     },
   });
 
+  const { toast } = useToast();
+
   const { data: cargas, isLoading } = trpc.carga.listarCargas.useQuery();
   const selectedCarga = form.watch("carga");
 
-  // Filtra as dimensões de acordo com o tipo selecionado em "carga"
-  const filteredDimensoes = cargas?.filter(
-    (carga) => carga.tipo === selectedCarga
-  );
+  // Encontra a carga selecionada para usar suas dimensões
+  const cargaSelecionada = cargas?.find((carga) => carga.id === selectedCarga);
+
+  const criarTransporte = trpc.transporte.criarTransporte.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Transporte iniciado",
+        description: "O transporte foi iniciado com sucesso!",
+      });
+      onClose();
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao iniciar transporte",
+        description: error.message,
+        variant: "destructive",
+      });
+      console.error("Erro ao criar transporte:", error.message);
+    },
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Transporte Selecionado:", values);
-    onClose();
+    criarTransporte.mutate({
+      rotaId: values.destino,
+      cargaId: values.carga,
+      status: "Em transporte",
+      finalizado: false,
+    });
   }
 
   return (
@@ -68,7 +87,7 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
             <CargaSelect form={form} cargas={cargas} isLoading={isLoading} />
             <DimensoesSelect
               form={form}
-              dimensoes={filteredDimensoes}
+              dimensoes={cargaSelecionada ? [cargaSelecionada] : []} // Passa a carga selecionada como dimensões
               isLoading={isLoading}
               selectedCarga={selectedCarga}
             />

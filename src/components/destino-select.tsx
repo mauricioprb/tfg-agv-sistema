@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { trpc } from "@/server/client";
 import { UseFormReturn } from "react-hook-form";
 
 interface DestinoSelectProps {
@@ -19,6 +20,8 @@ interface DestinoSelectProps {
 }
 
 export function DestinoSelect({ form: _form }: DestinoSelectProps) {
+  const { data: rotas, isLoading } = trpc.rota.listarRotas.useQuery();
+
   return (
     <FormField
       name="destino"
@@ -32,8 +35,15 @@ export function DestinoSelect({ form: _form }: DestinoSelectProps) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="area_a">Área de descarga A</SelectItem>
-              <SelectItem value="area_b">Área de descarga B</SelectItem>
+              {isLoading ? (
+                <SelectItem value="">Carregando...</SelectItem>
+              ) : (
+                rotas?.map((rota) => (
+                  <SelectItem key={rota.id} value={rota.id}>
+                    {rota.nome}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
           <FormMessage />

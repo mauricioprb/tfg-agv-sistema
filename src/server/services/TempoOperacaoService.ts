@@ -9,9 +9,16 @@ export class TempoOperacaoService {
   }
 
   async updateTempoOperacao(novoTempo: number): Promise<number> {
-    await prisma.agv.updateMany({
-      data: { tempoOperacao: novoTempo },
+    const agv = await prisma.agv.findFirst({
+      select: { id: true },
     });
+
+    if (agv) {
+      await prisma.agv.update({
+        where: { id: agv.id },
+        data: { tempoOperacao: novoTempo },
+      });
+    }
     return novoTempo;
   }
 }

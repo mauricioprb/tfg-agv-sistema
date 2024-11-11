@@ -3,16 +3,20 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icons } from "@/components/icons";
 import PageContainer from "@/components/layout/page-container";
-import { MonitorTrack } from "@/components/monitor-track";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import Link from "next/dist/client/link";
+import Link from "next/link";
 import GestaoTransporteTable from "../gestao-transporte-table";
 import { useEffect, useState } from "react";
-import { ModalTransporte } from "@/components/modal-transporte";
+import { StatusCard } from "@/components/status-card";
+import { MonitorStatusCard } from "@/components/monitor-status-card";
+import { TransporteDetalhado } from "@/components/transporte-detalhado";
+import { createMqttClient } from "@/mqtt/mqttClient";
+
+const MQTT_TOPIC = "agv/metricas";
+const INACTIVITY_TIMEOUT = 20000;
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -21,20 +25,56 @@ const breadcrumbItems = [
 
 export default function GestaoTransportePage() {
   const [chegou, setChegou] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rota, setRota] = useState("");
+  const [status, setStatus] = useState("Desligado");
+  const [carga, setCarga] = useState("Indefinido");
+  const [destino, setDestino] = useState("Indefinido");
+  const [comprimento, setComprimento] = useState(0);
+  const [altura, setAltura] = useState(0);
+  const [largura, setLargura] = useState(0);
+  const [peso, setPeso] = useState(0);
+  const client = createMqttClient();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setChegou(true);
-    }, 5000);
+    let inactivityTimer: NodeJS.Timeout;
 
-    return () => clearTimeout(timer);
-  }, []);
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        setStatus("Desligado");
+      }, INACTIVITY_TIMEOUT);
+    };
 
-  // Função para abrir o modal
-  const handleOpenModal = () => setIsModalOpen(true);
+    client.subscribe(MQTT_TOPIC, { qos: 0 }, (err) => {
+      if (err) {
+        console.error("Erro ao subscrever ao tópico:", err);
+      }
+    });
 
-  // Função para fechar o modal
-  const handleCloseModal = () => setIsModalOpen(false);
+    client.on("message", (topic, message) => {
+      if (topic === MQTT_TOPIC) {
+        try {
+          const data = JSON.parse(message.toString());
+          setStatus(data.status || "Desligado");
+
+          if (data.carga !== undefined) setCarga(data.carga);
+          if (data.destino !== undefined) setDestino(data.destino);
+          if (data.rota !== undefined) setRota(data.rota);
+          if (data.chegou !== undefined) setChegou(data.chegou);
+          if (data.comprimento !== undefined) setComprimento(data.comprimento);
+          if (data.altura !== undefined) setAltura(data.altura);
+          if (data.largura !== undefined) setLargura(data.largura);
+          if (data.peso !== undefined) setPeso(data.peso);
+
+          resetInactivityTimer();
+        } catch (error) {
+          console.error("Erro ao parsear mensagem MQTT:", error);
+        }
+      }
+    });
+
+    return () => clearTimeout(inactivityTimer);
+  }, [client]);
 
   return (
     <PageContainer scrollable>
@@ -50,57 +90,9 @@ export default function GestaoTransportePage() {
         <Separator />
         <div className="grid lg:grid-cols-2 gap-5 grid-cols-1 mt-4">
           <div className="flex flex-col gap-5">
-            <Card className="w-full">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Status do AGV
-                </CardTitle>
-                <Icons.operacao className="text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">
-                  Em operação
-                </div>
-              </CardContent>
-            </Card>
+            <StatusCard status={status} />
 
-            <Card className="w-full h-full">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex mb-4">
-                  <Icons.monitor className="mr-2 h-5 w-5 text-muted-foreground" />
-                  Monitoramento
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-12">
-                  <div className="flex justify-center">
-                    <MonitorTrack
-                      rota={"descarga a"}
-                      chegou={chegou}
-                      destino="descarga a"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-6 flex-wrap justify-center">
-                  <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.rfid className="w-6 h-6 mr-2" />
-                    RFID
-                  </p>
-                  <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.carga className="w-6 h-6 mr-2" />
-                    Carga
-                  </p>
-                  <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.descarga className="w-6 h-6 mr-2" />
-                    Descarga
-                  </p>
-                  <p className="text-muted-foreground text-sm flex items-center">
-                    <Icons.manutencao className="w-6 h-6 mr-2" />
-                    Manutenção
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <MonitorStatusCard rota={rota} destino={destino} chegou={chegou} />
           </div>
           <div className="flex flex-col gap-5">
             <div className="flex gap-4 md:flex-nowrap flex-wrap">
@@ -118,67 +110,14 @@ export default function GestaoTransportePage() {
                 Cadastrar Carga
               </Link>
             </div>
-            <Card className="w-full h-full">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex mb-4">
-                  <Icons.split className="mr-2 h-5 w-5 text-muted-foreground" />
-                  Transportando
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="lg:grid lg:grid-cols-[2fr_1fr]">
-                <div>
-                  <p className="text-muted-foreground text-sm mb-2">
-                    Carga / Destino
-                  </p>
-                  <div className="flex items-center gap-5 mb-4 lg:mb-0">
-                    <h2 className="text-2xl font-bold">Caixa</h2>
-                    <Icons.arrowRight />
-                    <h2 className="text-2xl font-bold">Área de descarga B</h2>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Button onClick={handleOpenModal}>
-                    <Icons.start className="w-4 h-4 mr-2" />
-                    Iniciar
-                  </Button>
-                  <Button variant="destructive">
-                    <Icons.parar className="w-4 h-4 mr-2" />
-                    Cancelar
-                  </Button>
-                </div>
-                <Separator className="my-8 col-span-2" />
-                <h3 className="text-muted-foreground font-medium text-sm mb-5 col-span-2 flex items-center">
-                  <Icons.dados className="w-4 h-4 mr-2" />
-                  Dados do Transporte
-                </h3>
-                <div className="col-span-2">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-muted-foreground text-sm mb-2">
-                        Comprimento
-                      </p>
-                      <h3 className="text-lg font-bold">90mm</h3>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-sm mb-2">
-                        Altura
-                      </p>
-                      <h3 className="text-lg font-bold">50mm</h3>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-sm mb-2">
-                        Largura
-                      </p>
-                      <h3 className="text-lg font-bold">60mm</h3>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-sm mb-2">Peso</p>
-                      <h3 className="text-lg font-bold">100g</h3>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <TransporteDetalhado
+              carga={carga}
+              destino={destino}
+              comprimento={comprimento}
+              altura={altura}
+              largura={largura}
+              peso={peso}
+            />
           </div>
         </div>
         <Separator />
@@ -187,9 +126,6 @@ export default function GestaoTransportePage() {
         </h2>
         <GestaoTransporteTable data={[]} totalData={0} />
       </div>
-
-      {/* Componente ModalTransporte separado */}
-      <ModalTransporte isOpen={isModalOpen} onClose={handleCloseModal} />
     </PageContainer>
   );
 }
