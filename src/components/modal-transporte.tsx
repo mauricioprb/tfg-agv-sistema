@@ -43,7 +43,6 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
   const { data: cargas, isLoading } = trpc.carga.listarCargas.useQuery();
   const selectedCarga = form.watch("carga");
 
-  // Encontra a carga selecionada para usar suas dimensões
   const cargaSelecionada = cargas?.find((carga) => carga.id === selectedCarga);
 
   const criarTransporte = trpc.transporte.criarTransporte.useMutation({
@@ -85,9 +84,10 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <CargaSelect form={form} cargas={cargas} isLoading={isLoading} />
+
             <DimensoesSelect
               form={form}
-              dimensoes={cargaSelecionada ? [cargaSelecionada] : []} // Passa a carga selecionada como dimensões
+              dimensoes={cargaSelecionada ? [cargaSelecionada] : []}
               isLoading={isLoading}
               selectedCarga={selectedCarga}
             />

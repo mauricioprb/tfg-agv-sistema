@@ -17,4 +17,8 @@ export const transporteRouter = router({
     .mutation(async ({ input }) => {
       return await transporteController.criarTransporte(input);
     }),
+
+  listarTransportes: procedure.query(async () => {
+    return await transporteController.listarTransportes();
+  }),
 });

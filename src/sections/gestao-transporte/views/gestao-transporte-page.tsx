@@ -14,6 +14,9 @@ import { StatusCard } from "@/components/status-card";
 import { MonitorStatusCard } from "@/components/monitor-status-card";
 import { TransporteDetalhado } from "@/components/transporte-detalhado";
 import { createMqttClient } from "@/mqtt/mqttClient";
+import { trpc } from "@/server/client";
+import { GestaoTransporte } from "@/constants/data";
+import { formatarData } from "@/lib/formatarData";
 
 const MQTT_TOPIC = "agv/metricas";
 const INACTIVITY_TIMEOUT = 20000;
@@ -33,7 +36,22 @@ export default function GestaoTransportePage() {
   const [altura, setAltura] = useState(0);
   const [largura, setLargura] = useState(0);
   const [peso, setPeso] = useState(0);
+
+  const [transportes, setTransportes] = useState<GestaoTransporte[]>([]);
   const client = createMqttClient();
+
+  const { data: transportesData, isLoading } =
+    trpc.transporte.listarTransportes.useQuery();
+
+  useEffect(() => {
+    if (transportesData) {
+      const transportesFormatados = transportesData.map((transporte) => ({
+        ...transporte,
+        data: formatarData(transporte.data),
+      }));
+      setTransportes(transportesFormatados);
+    }
+  }, [transportesData]);
 
   useEffect(() => {
     let inactivityTimer: NodeJS.Timeout;
@@ -124,7 +142,14 @@ export default function GestaoTransportePage() {
         <h2 className="text-lg font-medium text-muted-foreground">
           Histórico de Transportes
         </h2>
-        <GestaoTransporteTable data={[]} totalData={0} />
+        {isLoading ? (
+          <p>Carregando transportes...</p>
+        ) : (
+          <GestaoTransporteTable
+            data={transportes}
+            totalData={transportes.length}
+          />
+        )}
       </div>
     </PageContainer>
   );

@@ -20,4 +20,13 @@ export class TransporteController {
       throw new Error("Não foi possível criar o transporte.");
     }
   }
+
+  async listarTransportes() {
+    try {
+      return await this.transporteService.listarTransportes();
+    } catch (error) {
+      console.error("Erro ao listar transportes:", error);
+      throw new Error("Não foi possível listar os transportes.");
+    }
+  }
 }
