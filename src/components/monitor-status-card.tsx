@@ -4,11 +4,16 @@ import { Icons } from "@/components/icons";
 import { MonitorTrack } from "@/components/monitor-track";
 
 interface MonitorStatusCardProps {
-  rota: "carga" | "manutencao" | "descarga a" | "descarga b";
+  rota: string;
+  destino: string;
   chegou: boolean;
 }
 
-export function MonitorStatusCard({ rota, chegou }: MonitorStatusCardProps) {
+export function MonitorStatusCard({
+  rota,
+  destino,
+  chegou,
+}: MonitorStatusCardProps) {
   return (
     <Card className="w-full h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -20,7 +25,7 @@ export function MonitorStatusCard({ rota, chegou }: MonitorStatusCardProps) {
       <CardContent>
         <div className="mb-12">
           <div className="flex justify-center">
-            <MonitorTrack rota={rota} chegou={chegou} destino="descarga a" />
+            <MonitorTrack rota={rota} chegou={chegou} destino={destino} />
           </div>
         </div>
         <div className="flex gap-6 flex-wrap justify-center">

@@ -57,16 +57,17 @@ model Session {
 }
 
 model Agv {
-  id                String              @id @default(uuid())
-  status            String
-  tempoOperacao     Int                 @map("tempo_operacao")
-  usuarioId         String              @map("usuario_id")
-  transportes       Transporte[]
-  usuario           User                @relation(fields: [usuarioId], references: [id])
-  criadoEm          DateTime            @default(now()) @map("criado_em")
-  atualizadoEm      DateTime            @updatedAt @map("atualizado_em")
-  Erro              Erro[]
-  RegistroAtividade RegistroAtividade[]
+  id                  String              @id @default(uuid())
+  status              String
+  tempoOperacao       Int                 @map("tempo_operacao")
+  distanciaPercorrida Float               @map("distancia_percorrida")
+  usuarioId           String              @map("usuario_id")
+  transportes         Transporte[]
+  usuario             User                @relation(fields: [usuarioId], references: [id])
+  criadoEm            DateTime            @default(now()) @map("criado_em")
+  atualizadoEm        DateTime            @updatedAt @map("atualizado_em")
+  Erro                Erro[]
+  RegistroAtividade   RegistroAtividade[]
 
   @@map("agv")
 }

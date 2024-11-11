@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import PageContainer from "@/components/layout/page-container";
 import { getFormattedDate } from "@/lib/dateUtils";
 import { Header } from "../header";
@@ -19,21 +19,30 @@ import { Icons } from "@/components/icons";
 import { createMqttClient } from "@/mqtt/mqttClient";
 
 const MQTT_TOPIC = "agv/metricas";
-const TIMEOUT_INTERVAL = 10000;
+const INACTIVITY_TIMEOUT = 20000;
 
 export default function OverviewPage() {
   const currentDate = getFormattedDate();
   const [chegou, setChegou] = useState(false);
-  const [rota, setRota] = useState<
-    "carga" | "manutencao" | "descarga a" | "descarga b"
-  >("carga");
-
+  const [rota, setRota] = useState("");
   const [tempoIniciado, setTempoIniciado] = useState(false);
   const [status, setStatus] = useState("Desligado");
-  const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
+  const [velocidade, setVelocidade] = useState(0);
+  const [distancia, setDistancia] = useState(0);
+  const [carga, setCarga] = useState("Indefinido");
+  const [destino, setDestino] = useState("Indefinido");
+  const client = createMqttClient();
 
   useEffect(() => {
-    const client = createMqttClient();
+    let inactivityTimer: NodeJS.Timeout;
+
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        setStatus("Desligado");
+        setTempoIniciado(false);
+      }, INACTIVITY_TIMEOUT);
+    };
 
     client.subscribe(MQTT_TOPIC, { qos: 0 }, (err) => {
       if (err) {
@@ -47,34 +56,35 @@ export default function OverviewPage() {
           const data = JSON.parse(message.toString());
           setTempoIniciado(data.status === "Em operação");
           setStatus(data.status || "Desligado");
-          setLastUpdateTime(Date.now());
+
+          if (data.velocidade !== undefined) {
+            setVelocidade(data.velocidade);
+          }
+          if (data.distancia !== undefined) {
+            setDistancia(data.distancia);
+          }
+          if (data.carga !== undefined) {
+            setCarga(data.carga);
+          }
+          if (data.destino !== undefined) {
+            setDestino(data.destino);
+          }
+          if (data.rota !== undefined) {
+            setRota(data.rota);
+          }
+          if (data.chegou !== undefined) {
+            setChegou(data.chegou);
+          }
+
+          resetInactivityTimer();
         } catch (error) {
           console.error("Erro ao parsear mensagem MQTT:", error);
         }
       }
     });
 
-    const intervalId = setInterval(() => {
-      if (Date.now() - lastUpdateTime > TIMEOUT_INTERVAL) {
-        setStatus("Desligado");
-        setTempoIniciado(false);
-      }
-    }, 1000);
-
-    return () => {
-      client.end();
-      clearInterval(intervalId);
-    };
-  }, [lastUpdateTime]);
-
-  useEffect(() => {
-    const timer1 = setTimeout(() => setRota("descarga a"), 5000);
-    const timer2 = setTimeout(() => setChegou(true), 10000);
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
+    return () => clearTimeout(inactivityTimer);
+  }, [client]);
 
   return (
     <PageContainer scrollable>
@@ -86,10 +96,10 @@ export default function OverviewPage() {
             <StatusCard status={status} />
             <ErroCard />
           </div>
-          <GraficoVelocimetro velocidade={0.5} />
+          <GraficoVelocimetro velocidade={velocidade} />
           <div className="grid grid-rows-2 gap-5">
             <TempoOperacaoCard tempoIniciado={tempoIniciado} />
-            <DistanciaCard />
+            <DistanciaCard distancia={distancia} />
             <Link
               href={"/dashboard/registro-atividades"}
               className={cn(buttonVariants({ variant: "default" })) + " w-full"}
@@ -100,8 +110,8 @@ export default function OverviewPage() {
           </div>
         </div>
         <div className="flex flex-col gap-5">
-          <TransporteStatusCard carga="Teste" destino="Teste" />
-          <MonitorStatusCard rota={rota} chegou={chegou} />
+          <TransporteStatusCard carga={carga} destino={destino} />
+          <MonitorStatusCard rota={rota} chegou={chegou} destino={destino} />
         </div>
       </div>
     </PageContainer>

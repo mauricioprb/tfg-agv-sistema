@@ -14,9 +14,8 @@ async function addAgv() {
     await prisma.agv.create({
       data: {
         status: "Desligado",
-        velocidade: 0,
-        tensaoBateria: 0,
         tempoOperacao: 0,
+        distanciaPercorrida: 0,
         usuarioId,
       },
     });
