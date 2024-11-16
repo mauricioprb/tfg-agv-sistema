@@ -1,54 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
-import { trpc } from "@/server/client";
 
 interface TempoOperacaoCardProps {
-  tempoIniciado: boolean;
+  tempoOperacao: number;
 }
 
-export function TempoOperacaoCard({ tempoIniciado }: TempoOperacaoCardProps) {
-  const [tempo, setTempo] = useState(0);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  trpc.agv.getTempoOperacao.useQuery(undefined, {
-    onSuccess: (data: number) => {
-      setTempo(data);
-    },
-  });
-
-  const updateTempo = trpc.agv.updateTempoOperacao.useMutation();
-
-  useEffect(() => {
-    if (tempoIniciado && !intervalId) {
-      const id = setInterval(() => {
-        setTempo((prevTempo) => {
-          const newTempo = prevTempo + 1;
-          updateTempo.mutate({ novoTempo: newTempo });
-          return newTempo;
-        });
-      }, 1000);
-      setIntervalId(id);
-    } else if (!tempoIniciado && intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
-
-    if (!tempoIniciado) {
-      setTempo(0);
-      updateTempo.mutate({ novoTempo: 0 });
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        setIntervalId(null);
-      }
-    };
-  }, [tempoIniciado, intervalId, updateTempo]);
-
+export function TempoOperacaoCard({ tempoOperacao }: TempoOperacaoCardProps) {
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -65,7 +24,7 @@ export function TempoOperacaoCard({ tempoIniciado }: TempoOperacaoCardProps) {
         <Icons.timer className="text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatTime(tempo)}</div>
+        <div className="text-2xl font-bold">{formatTime(tempoOperacao)}</div>
       </CardContent>
     </Card>
   );

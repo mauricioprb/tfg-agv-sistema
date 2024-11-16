@@ -25,12 +25,12 @@ export default function OverviewPage() {
   const currentDate = getFormattedDate();
   const [chegou, setChegou] = useState(false);
   const [rota, setRota] = useState("");
-  const [tempoIniciado, setTempoIniciado] = useState(false);
   const [status, setStatus] = useState("Desligado");
   const [velocidade, setVelocidade] = useState(0);
   const [distancia, setDistancia] = useState(0);
   const [carga, setCarga] = useState("Indefinido");
   const [destino, setDestino] = useState("Indefinido");
+  const [tempoOperacao, setTempoOperacao] = useState(0);
   const client = createMqttClient();
 
   useEffect(() => {
@@ -40,7 +40,6 @@ export default function OverviewPage() {
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
         setStatus("Desligado");
-        setTempoIniciado(false);
       }, INACTIVITY_TIMEOUT);
     };
 
@@ -54,7 +53,6 @@ export default function OverviewPage() {
       if (topic === MQTT_TOPIC) {
         try {
           const data = JSON.parse(message.toString());
-          setTempoIniciado(data.status === "Em operação");
           setStatus(data.status || "Desligado");
 
           if (data.velocidade !== undefined) {
@@ -74,6 +72,9 @@ export default function OverviewPage() {
           }
           if (data.chegou !== undefined) {
             setChegou(data.chegou);
+          }
+          if (data.tempo !== undefined) {
+            setTempoOperacao(data.tempo);
           }
 
           resetInactivityTimer();
@@ -98,7 +99,7 @@ export default function OverviewPage() {
           </div>
           <GraficoVelocimetro velocidade={velocidade} />
           <div className="grid grid-rows-2 gap-5">
-            <TempoOperacaoCard tempoIniciado={tempoIniciado} />
+            <TempoOperacaoCard tempoOperacao={tempoOperacao} />
             <DistanciaCard distancia={distancia} />
             <Link
               href={"/dashboard/registro-atividades"}
