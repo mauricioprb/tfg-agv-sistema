@@ -17,7 +17,7 @@ export function DistanciaCard({ distancia }: DistanciaCardProps) {
         <Icons.regua className="text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{distancia ? distancia : 0}m</div>
+        <div className="text-2xl font-bold">{distancia ? distancia : 0}cm</div>
       </CardContent>
     </Card>
   );

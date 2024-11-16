@@ -41,7 +41,7 @@ export function GraficoVelocimetro({
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-muted-foreground font-medium">
-          Velocidade Atual
+          Velocidade aproximada
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

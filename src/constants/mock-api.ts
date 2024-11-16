@@ -20,21 +20,21 @@ export const fakeRegistroAtividades = {
       registros: [
         {
           id: "1",
-          data: "2023-10-01T10:00:00Z",
-          operador: "Operador 1",
-          evento: "gomes",
+          data: "15/11/2024",
+          operador: "Mauricio Pereira Braga",
+          evento: "Iniciou o transporte para a Descarga A",
         },
         {
           id: "2",
-          data: "2023-10-01T10:00:00Z",
-          operador: "Operador 2",
-          evento: "",
+          data: "15/11/2024",
+          operador: "Mauricio Pereira Braga",
+          evento: "Iniciou o transporte para a Descarga B",
         },
         {
-          id: "3",
-          data: "2023-10-01T10:00:00Z",
-          operador: "Operador 3",
-          evento: "juse",
+          id: "2",
+          data: "15/11/2024",
+          operador: "Mauricio Pereira Braga",
+          evento: "Ligou o AGV",
         },
       ],
     };
@@ -50,21 +50,21 @@ export const fakeOperadores = {
     const sampleOperadores: Operador[] = [
       {
         id: "1",
-        data: "2023-10-01T10:00:00Z",
-        operador: "Operador 1",
-        evento: "gomes",
+        data: "15/11/2024 - 10:00",
+        operador: "Mauricio Pereira Braga",
+        evento: "AGV chegou ao destino Descarga A",
       },
       {
         id: "2",
-        data: "2023-10-01T10:00:00Z",
-        operador: "Operador 2",
-        evento: "",
+        data: "15/11/2024 - 10:00",
+        operador: "Mauricio Pereira Braga",
+        evento: "Iniciou o transporte para a Descarga B",
       },
       {
         id: "3",
-        data: "2023-10-01T10:00:00Z",
-        operador: "Operador 3",
-        evento: "juse",
+        data: "15/11/2024 - 09:58",
+        operador: "Mauricio Pereira Braga",
+        evento: "Ligou o AGV",
       },
     ];
 

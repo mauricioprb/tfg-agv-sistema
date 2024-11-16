@@ -6,8 +6,8 @@ import { PieGraph } from "@/sections/dashboard/pie-graph";
 
 export function GraficoMovimentacoes() {
   const chartData = [
-    { area: "Descarga A", value: 200, fill: "var(--color-descargaA)" },
-    { area: "Descarga B", value: 300, fill: "var(--color-descargaB)" },
+    { area: "Descarga A", value: 2, fill: "var(--color-descargaA)" },
+    { area: "Descarga B", value: 1, fill: "var(--color-descargaB)" },
     { area: "Manutenção", value: 0, fill: "var(--color-manutencao)" },
   ];
 
