@@ -21,4 +21,8 @@ export const transporteRouter = router({
   listarTransportes: procedure.query(async () => {
     return await transporteController.listarTransportes();
   }),
+
+  listarTransportesPorRota: procedure.query(async () => {
+    return await transporteController.listarTransportesPorRota();
+  }),
 });

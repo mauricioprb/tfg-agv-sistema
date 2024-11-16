@@ -1,6 +1,6 @@
 [
-  { "nome": "Área de Carga" },
-  { "nome": "Área de Descarga A" },
-  { "nome": "Área de Descarga B" },
+  { "nome": "Carga" },
+  { "nome": "Descarga A" },
+  { "nome": "Descarga B" },
   { "nome": "Manutenção" }
 ]

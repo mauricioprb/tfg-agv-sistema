@@ -36,6 +36,11 @@ export function TempoOperacaoCard({ tempoIniciado }: TempoOperacaoCardProps) {
       setIntervalId(null);
     }
 
+    if (!tempoIniciado) {
+      setTempo(0);
+      updateTempo.mutate({ novoTempo: 0 });
+    }
+
     return () => {
       if (intervalId) {
         clearInterval(intervalId);

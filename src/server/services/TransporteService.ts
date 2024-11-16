@@ -82,4 +82,36 @@ export class TransporteService {
       status: transporte.status,
     }));
   }
+
+  async listarTransportesPorRota(): Promise<{ rota: string; count: number }[]> {
+    const transportesPorRota = await prisma.transporte.groupBy({
+      by: ["rotaId"],
+      where: {
+        finalizado: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const rotas = await prisma.rota.findMany({
+      where: {
+        id: {
+          in: transportesPorRota.map((group) => group.rotaId),
+        },
+      },
+      select: {
+        id: true,
+        nome: true,
+      },
+    });
+
+    return transportesPorRota.map((group) => {
+      const rota = rotas.find((r) => r.id === group.rotaId);
+      return {
+        rota: rota?.nome || "Desconhecido",
+        count: group._count.id,
+      };
+    });
+  }
 }

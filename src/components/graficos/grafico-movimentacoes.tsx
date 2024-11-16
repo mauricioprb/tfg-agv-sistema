@@ -1,42 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
-import { createMqttClient } from "@/mqtt/mqttClient";
 import { PieGraph } from "@/sections/dashboard/pie-graph";
+import { trpc } from "@/server/client";
 
 export function GraficoMovimentacoes() {
-  const chartData = [
-    { area: "Descarga A", value: 2, fill: "var(--color-descargaA)" },
-    { area: "Descarga B", value: 1, fill: "var(--color-descargaB)" },
-    { area: "Manutenção", value: 0, fill: "var(--color-manutencao)" },
-  ];
-
-  useEffect(() => {
-    const client = createMqttClient();
-
-    client.subscribe("esp32/bateria", (err) => {
-      if (!err) {
-        console.log("Inscrito no tópico bateria");
-      } else {
-        console.error("Erro ao se inscrever no tópico:", err);
-      }
+  const { data: transportesPorRota = [] } =
+    trpc.transporte.listarTransportesPorRota.useQuery(undefined, {
+      refetchInterval: 10000,
     });
 
-    client.on("message", (topic, message) => {
-      if (topic === "esp32/bateria") {
-        const dados = JSON.parse(message.toString());
-        console.time("converterDadosBateria");
-        console.log("Dados recebidos:", dados);
-        console.timeEnd("converterDadosBateria");
-      }
-    });
+  const chartData = transportesPorRota.map((item) => ({
+    area: item.rota,
+    value: item.count,
+    fill: getColorForRota(item.rota),
+  }));
 
-    return () => {
-      if (client) {
-        client.end();
-      }
-    };
-  }, []);
+  function getColorForRota(rota: string) {
+    switch (rota) {
+      case "Descarga A":
+        return "var(--color-descargaA)";
+      case "Descarga B":
+        return "var(--color-descargaB)";
+      case "Manutenção":
+        return "var(--color-manutencao)";
+      default:
+        return "var(--color-default)";
+    }
+  }
 
   return <PieGraph chartData={chartData} />;
 }

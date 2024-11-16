@@ -34,7 +34,7 @@ export default function OverviewPage() {
   const client = createMqttClient();
 
   useEffect(() => {
-    let inactivityTimer: NodeJS.Timeout;
+    let inactivityTimer: string | number | NodeJS.Timeout | undefined;
 
     const resetInactivityTimer = () => {
       clearTimeout(inactivityTimer);

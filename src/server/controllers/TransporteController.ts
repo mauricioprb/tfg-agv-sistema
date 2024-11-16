@@ -29,4 +29,13 @@ export class TransporteController {
       throw new Error("Não foi possível listar os transportes.");
     }
   }
+
+  async listarTransportesPorRota() {
+    try {
+      return await this.transporteService.listarTransportesPorRota();
+    } catch (error) {
+      console.error("Erro ao listar transportes por rota:", error);
+      throw new Error("Não foi possível listar os transportes por rota.");
+    }
+  }
 }
