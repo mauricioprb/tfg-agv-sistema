@@ -5,6 +5,9 @@ const rotaController = new RotaController();
 
 export const rotaRouter = router({
   listarRotas: procedure.query(async () => {
-    return await rotaController.listarRotas();
+    const rotas = await rotaController.listarRotas();
+    return rotas.filter(
+      (rota) => rota.nome !== "Manutenção" && rota.nome !== "Carga"
+    );
   }),
 });

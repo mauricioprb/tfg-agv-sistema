@@ -28,7 +28,7 @@ export const fakeRegistroAtividades = {
           id: "2",
           data: "15/11/2024",
           operador: "Mauricio Pereira Braga",
-          evento: "Iniciou o transporte para a Descarga B",
+          evento: "Iniciou o transporte para a Descarga A",
         },
         {
           id: "2",
@@ -58,7 +58,7 @@ export const fakeOperadores = {
         id: "2",
         data: "15/11/2024 - 10:00",
         operador: "Mauricio Pereira Braga",
-        evento: "Iniciou o transporte para a Descarga B",
+        evento: "Iniciou o transporte para a Descarga A",
       },
       {
         id: "3",

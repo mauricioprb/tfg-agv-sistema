@@ -40,7 +40,7 @@ export default function LoginPage() {
         </div>
         <UserAuthForm />
         <p className="px-8 text-center text-sm text-muted-foreground">
-          Este é um projeto de Trabalho de Final de Graduação.
+          Este é um projeto de Trabalho de Final Graduação.
         </p>
       </div>
     </div>
