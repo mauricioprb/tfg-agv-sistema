@@ -1,3 +1,0 @@
-[submodule "raspberry/--force"]
-	path = raspberry/--force
-	url = git@github.com:mauricioprb/tfg-agv-robo.git
