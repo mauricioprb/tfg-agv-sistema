@@ -2,8 +2,8 @@
 
 Este projeto é parte do meu Trabalho Final de Graduação e visa o desenvolvimento de um Veículo Guiado Automatizado (AGV) focado em aprimorar a logística no contexto da Indústria 4.0. O AGV opera de maneira autônoma para melhorar o transporte de cargas em ambientes industriais, proporcionando eficiência, precisão e segurança na movimentação de materiais.
 
-![Sistema](imagens/sistema.gif)
-![Sistema](imagens/agv.png)
+![Sistema](.github/sistema.gif)
+![Sistema](.github/agv.png)
 
 ## 🚧 Pré-requisitos
 
@@ -33,7 +33,7 @@ O processo envolve impressão 3D e envonve conhecimentos específicos para execu
 
 Para construir a eletrônica base deve-se seguir o esquema abaixo. Tendo em vista que a ponte H representada na verdade deve ser um ESC com regulador de tensão embutido.
 
-![Circuito](imagens/circuito.jpg)
+![Circuito](.github/circuito.jpg)
 
 ## 🌐 Aplicativo Web
 
