@@ -28,7 +28,12 @@ export function DestinoSelect({ form: _form }: DestinoSelectProps) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Destino</FormLabel>
-          <Select onValueChange={field.onChange} value={field.value}>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+            }}
+            value={field.value}
+          >
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o destino" />

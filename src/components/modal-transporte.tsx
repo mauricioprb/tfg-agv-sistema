@@ -16,6 +16,7 @@ import { trpc } from "@/server/client";
 import { DimensoesSelect } from "./dimensoes-select";
 import { DestinoSelect } from "./destino-select";
 import { CargaSelect } from "./carga-select";
+import { createMqttClient } from "@/mqtt/mqttClient";
 
 const formSchema = z.object({
   carga: z.string().min(1, { message: "Campo obrigatório" }),
@@ -27,6 +28,8 @@ interface ModalTransporteProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const mqttClient = createMqttClient();
 
 export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,9 +43,13 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
 
   const { toast } = useToast();
 
-  const { data: cargas, isLoading } = trpc.carga.listarCargas.useQuery();
-  const selectedCarga = form.watch("carga");
+  // Fetch rotas
+  const { data: rotas, isLoading: isLoadingRotas } =
+    trpc.rota.listarRotas.useQuery();
 
+  const { data: cargas, isLoading: isLoadingCargas } =
+    trpc.carga.listarCargas.useQuery();
+  const selectedCarga = form.watch("carga");
   const cargaSelecionada = cargas?.find((carga) => carga.id === selectedCarga);
 
   const criarTransporte = trpc.transporte.criarTransporte.useMutation({
@@ -64,12 +71,38 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    criarTransporte.mutate({
-      rotaId: values.destino,
-      cargaId: values.carga,
-      status: "Em transporte",
-      finalizado: false,
-    });
+    const destino = rotas?.find((rota) => rota.id === values.destino)?.nome;
+
+    if (destino) {
+      const mensagem =
+        destino === "Descarga A"
+          ? "DGA"
+          : destino === "Descarga B"
+            ? "DGB"
+            : "";
+
+      if (mensagem) {
+        mqttClient.publish("transporte/iniciar", mensagem, (error) => {
+          if (error) {
+            toast({
+              title: "Erro ao iniciar transporte",
+              description: "Falha ao publicar o destino.",
+              variant: "destructive",
+            });
+            console.error("Erro ao publicar destino:", error);
+            return;
+          }
+          console.log("Destino publicado com sucesso:", destino);
+
+          criarTransporte.mutate({
+            rotaId: values.destino,
+            cargaId: values.carga,
+            status: "Em transporte",
+            finalizado: false,
+          });
+        });
+      }
+    }
   }
 
   return (
@@ -83,12 +116,16 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <CargaSelect form={form} cargas={cargas} isLoading={isLoading} />
+            <CargaSelect
+              form={form}
+              cargas={cargas}
+              isLoading={isLoadingCargas}
+            />
 
             <DimensoesSelect
               form={form}
               dimensoes={cargaSelecionada ? [cargaSelecionada] : []}
-              isLoading={isLoading}
+              isLoading={isLoadingCargas}
               selectedCarga={selectedCarga}
             />
             <DestinoSelect form={form} />
@@ -96,7 +133,9 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
               <Button variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
-              <Button type="submit">Iniciar</Button>
+              <Button type="submit" disabled={isLoadingRotas}>
+                Iniciar
+              </Button>
             </DialogFooter>
           </form>
         </Form>
