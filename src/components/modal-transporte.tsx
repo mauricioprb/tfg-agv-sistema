@@ -43,7 +43,6 @@ export function ModalTransporte({ isOpen, onClose }: ModalTransporteProps) {
 
   const { toast } = useToast();
 
-  // Fetch rotas
   const { data: rotas, isLoading: isLoadingRotas } =
     trpc.rota.listarRotas.useQuery();
 
