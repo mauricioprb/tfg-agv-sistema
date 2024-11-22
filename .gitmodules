@@ -1,3 +1,0 @@
-[submodule "raspberry/agv"]
-	path = raspberry/agv
-	url = git@github.com:mauricioprb/tfg-agv-robo.git
