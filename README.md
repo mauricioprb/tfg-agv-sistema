@@ -1,84 +1,146 @@
-# Desenvolvimento de um Protótipo de Veículo Automatizado para Automação Logística na Indústria 4.0
+# **Protótipo de Veículo Automatizado para Automação Logística na Indústria 4.0**
 
-Este projeto é parte do meu Trabalho Final de Graduação e visa o desenvolvimento de um Veículo Guiado Automatizado (AGV) focado em aprimorar a logística no contexto da Indústria 4.0. O AGV opera de maneira autônoma para melhorar o transporte de cargas em ambientes industriais, proporcionando eficiência, precisão e segurança na movimentação de materiais.
+Este projeto, desenvolvido como parte do Trabalho Final de Graduação, consiste na criação de um Veículo Guiado Automatizado (AGV) com o objetivo de otimizar a logística no contexto da Indústria 4.0. O AGV opera de forma autônoma, proporcionando eficiência, precisão e segurança no transporte de cargas em ambientes industriais.
 
 ![Sistema](.github/sistema.gif)
-![Sistema](.github/agv.png)
+![AGV](.github/agv.png)
 
-## 🚧 Pré-requisitos
+---
 
-### 👾 Tecnologias
+## **🚧 Pré-requisitos**
 
-- node v20+
-- Docker
+### **👾 Tecnologias**
 
-### 🏗️ Dipositivos físicos
+- **Node.js** (versão 20 ou superior)
+- **Docker**
+- **Broker MQTT**
 
-- Raspberry Pi (computador)
-- Sensor ultrasônico
-- ESC brushed (Eletronic Speed Controller para motores escovados)
+### **🏗️ Dispositivos Físicos**
+
+- Raspberry Pi (computador embarcado)
+- Sensor ultrassônico
+- ESC brushed (Controlador Eletrônico de Velocidade para motores escovados)
 - Leitor RFID
-- Bateria 3s (dependendo da tensão dos motores e do microcontrolador)
-- Motores dc escovados
-- Impressora 3D / máquinas para fabricação das peças
-- Rodas de 60mm com encaixes para os motores
+- Bateria 3S (11.1V)
+- Motores DC escovados
+- Impressora 3D ou equipamentos de fabricação para as peças
+- Rodas de 60 mm com encaixes compatíveis com os motores
 
-## 🤖 Construção do protótipo
+---
 
-Para construir o protótipo é necessário os arquivos. stl do projeto, os quais estão disponíveis [aqui](https://github.com/mauricioprb/tfg-agv-robo/tree/main/stl).
+## **🤖 Construção do Protótipo**
 
-O processo envolve impressão 3D e envonve conhecimentos específicos para executar, além de que no projeto original foi usado, chapas de acm e mdf para confeccionar as tampas, usando router CNC e corte a laser.
+### **Modelagem e Impressão**
 
-### ⚡ Eletrônica
+Os arquivos `.stl` necessários para impressão 3D estão disponíveis [neste repositório](https://github.com/mauricioprb/tfg-agv-robo/tree/main/stl).
 
-Para construir a eletrônica base deve-se seguir o esquema abaixo. Tendo em vista que a ponte H representada na verdade deve ser um ESC com regulador de tensão embutido.
+O processo de fabricação inclui:
+
+- **Impressão 3D** para a estrutura principal.
+- **Corte de chapas** (ACM e MDF) para as tampas, utilizando router CNC ou corte a laser.
+
+> **Nota:** É recomendável ter conhecimentos básicos de fabricação digital para reproduzir o protótipo.
+
+---
+
+### **⚡ Eletrônica**
+
+A montagem eletrônica deve seguir o esquema abaixo. Note que, no protótipo, o ESC substitui a ponte H representada no diagrama e inclui um regulador de tensão embutido.
 
 ![Circuito](.github/circuito.jpg)
 
-## 🌐 Aplicativo Web
+---
 
-Para estar executando o aplicativo web é necessário ter node e Docker.
+## **🍓 Configuração do Raspberry Pi**
 
-Abrindo o projeto em uma IDE/editor de texto, deve-se criar um arquivo `.env`, o qual deve ser preenchido com todas informações requisitadas como no `.env.example`. Logo após os comandos:
+Os códigos para o Raspberry Pi estão disponíveis [neste diretório](https://github.com/mauricioprb/tfg-agv-robo/tree/main). O sistema requer **Python 3** e configuração de um ambiente virtual (venv) para gerenciar dependências.
 
-Instalar os pacotes
+### **Passos de Configuração**
 
-```
-npm install
-```
+1. Ative o daemon do controlador GPIO:
 
-Rodar as migrations
+   ```bash
+   sudo ./start_pigpio.sh
+   ```
 
-```
-npm run dev:migrate
-```
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd tfg-agv-robo
+   source venv/bin/activate
+   cd src
+   ```
 
-Adicionar usuário a whitelist
+---
 
-```
-npm run add:usuario
-```
+## **🐝 Configuração do Broker MQTT**
 
-Adicionar AGV ao banco
+O sistema utiliza o protocolo MQTT para comunicação entre o AGV e o aplicativo. É necessário configurar um broker MQTT antes de iniciar a aplicação.
 
-```
-npm run add:agv -- "usuario_id"
-```
+### **Passos para Configurar o Broker MQTT**
 
-Adicionar as rotas
+1. **Instale um broker MQTT:**
 
-```
-npm run popular:rotas
-```
+   - Use brokers como [HiveMQ Cloud](https://www.hivemq.com/mqtt-cloud-broker/).
 
-Por fim, os comandos para executar a aplicação:
+2. **Configure as credenciais do broker no arquivo `.env`:**
 
-```
-npm run dev:docker
-```
+3. **Verifique a conectividade:**
+   Use a ferramenta MQTT preferida (como [MQTTX](https://mqttx.app)) para garantir que o broker está funcionando e aceitando conexões.
 
-Paralelamente
+---
 
-```
-npm run dev
-```
+## **🌐 Aplicativo Web**
+
+### **Configuração**
+
+1. Certifique-se de ter **Node.js** e **Docker** instalados.
+2. Abra o projeto em sua IDE ou editor de texto preferido.
+3. Crie um arquivo `.env` baseado no `.env.example` fornecido no repositório.
+
+### **Comandos para Configuração**
+
+1. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+2. Execute as migrações do banco de dados:
+
+   ```bash
+   npm run dev:migrate
+   ```
+
+3. Adicione um usuário à whitelist:
+
+   ```bash
+   npm run add:usuario
+   ```
+
+4. Registre o AGV no banco de dados:
+
+   ```bash
+   npm run add:agv -- "usuario_id"
+   ```
+
+5. Popule as rotas no sistema:
+   ```bash
+   npm run popular:rotas
+   ```
+
+### **Execução da Aplicação**
+
+1. Inicie os serviços Docker:
+
+   ```bash
+   npm run dev:docker
+   ```
+
+2. Em paralelo, execute o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+As imagens do trabalho estão [neste diretório](https://github.com/mauricioprb/tfg-agv-sistema/blob/main/IMAGENS.md).
