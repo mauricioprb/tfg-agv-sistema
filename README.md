@@ -2,8 +2,12 @@
 
 Este projeto, desenvolvido como parte do Trabalho Final de Graduação, consiste na criação de um Veículo Guiado Automatizado (AGV) com o objetivo de otimizar a logística no contexto da Indústria 4.0. O AGV opera de forma autônoma, proporcionando eficiência, precisão e segurança no transporte de cargas em ambientes industriais.
 
-![Funcionamento](.github/funcionamento.gif)
+<p align="center">
+  <img src=".github/funcionamento.gif" alt="Funcionamento" style="width: 800px; height: auto;" />
+</p>
+
 ![Sistema](.github/sistema.gif)
+
 ![AGV](.github/agv.png)
 
 ---
