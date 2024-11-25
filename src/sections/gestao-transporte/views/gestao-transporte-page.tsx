@@ -40,6 +40,8 @@ export default function GestaoTransportePage() {
   const [transportes, setTransportes] = useState<GestaoTransporte[]>([]);
   const client = createMqttClient();
 
+  const salvarStatus = trpc.agv.salvarStatus.useMutation();
+
   const { data: transportesData, isLoading } =
     trpc.transporte.listarTransportes.useQuery();
 
@@ -94,6 +96,23 @@ export default function GestaoTransportePage() {
     return () => clearTimeout(inactivityTimer);
   }, [client]);
 
+  const handleManutencao = async () => {
+    try {
+      const novoStatus = "Em manutenção";
+      setStatus(novoStatus);
+
+      client.publish(MQTT_TOPIC, JSON.stringify({ status: novoStatus }), {
+        qos: 0,
+      });
+
+      await salvarStatus.mutateAsync({ status: novoStatus });
+      console.log("Status de manutenção ativado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao ativar modo manutenção:", error);
+      setStatus(status);
+    }
+  };
+
   return (
     <PageContainer scrollable>
       <div className="space-y-6">
@@ -114,7 +133,11 @@ export default function GestaoTransportePage() {
           </div>
           <div className="flex flex-col gap-5">
             <div className="flex gap-4 md:flex-nowrap flex-wrap">
-              <Button variant="secondary" className="w-full">
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={handleManutencao}
+              >
                 <Icons.chave className="w-4 h-4 mr-2" />
                 Manutenção
               </Button>

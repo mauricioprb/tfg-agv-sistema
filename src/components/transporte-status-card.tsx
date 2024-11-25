@@ -29,7 +29,7 @@ export function TransporteStatusCard({
           Transportando
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col md:flex-row gap-4 md:gap-6 flex-wrap justify-center">
+      <CardContent>
         <p className="text-muted-foreground text-sm mb-2">Carga / Destino</p>
         <div className="flex items-center gap-5">{displayContent}</div>
       </CardContent>

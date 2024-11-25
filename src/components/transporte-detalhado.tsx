@@ -1,11 +1,12 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icons } from "./icons";
 import { ModalTransporte } from "./modal-transporte";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
+import type { MqttClient } from "mqtt";
+import { createMqttClient } from "@/mqtt/mqttClient";
 
 interface TransporteDetalhadoProps {
   carga?: string;
@@ -25,8 +26,29 @@ export function TransporteDetalhado({
   peso,
 }: TransporteDetalhadoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mqttClient, setMqttClient] = useState<MqttClient | null>(null);
+
+  useEffect(() => {
+    const client = createMqttClient();
+    setMqttClient(client);
+
+    return () => {
+      if (client) {
+        client.end();
+      }
+    };
+  }, []);
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleCancel = () => {
+    if (mqttClient && mqttClient.connected) {
+      mqttClient.publish("agv/parar", "Parar", { qos: 0 });
+    } else {
+      console.error("Cliente MQTT não está conectado");
+    }
+  };
 
   return (
     <>
@@ -57,7 +79,7 @@ export function TransporteDetalhado({
               <Icons.start className="w-4 h-4 mr-2" />
               Iniciar
             </Button>
-            <Button variant="destructive">
+            <Button variant="destructive" onClick={handleCancel}>
               <Icons.parar className="w-4 h-4 mr-2" />
               Cancelar
             </Button>
@@ -93,7 +115,6 @@ export function TransporteDetalhado({
           </div>
         </CardContent>
       </Card>
-
       <ModalTransporte isOpen={isModalOpen} onClose={handleCloseModal} />
     </>
   );
