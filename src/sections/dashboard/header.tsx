@@ -9,7 +9,6 @@ interface HeaderProps {
 }
 
 export function Header({ currentDate }: HeaderProps) {
-  // Estado para armazenar a instância do cliente MQTT
   const [mqttClient, setMqttClient] = useState<MqttClient | null>(null);
 
   useEffect(() => {
@@ -23,7 +22,7 @@ export function Header({ currentDate }: HeaderProps) {
 
   const handleStop = () => {
     if (mqttClient) {
-      mqttClient.publish("agv/parar", "Parar AGV"); // Publica a mensagem
+      mqttClient.publish("agv/parar", "Parar AGV");
       console.log("Comando de parada publicado no tópico agv/parar");
     }
   };
